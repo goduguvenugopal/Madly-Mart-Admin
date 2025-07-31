@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { dataContext } from "../App";
-import cloudinaryFunc from "./coudinary";
 import { MdClose } from "react-icons/md";
 import { CustomLoading, Loading, SmallLoading } from "./Loading";
 import axios from "axios";
