@@ -10,7 +10,6 @@ import Admin from "./assets/Admin.jsx";
 import Products from "./assets/Products.jsx";
 import AddCategory from "./assets/AddCategory.jsx";
 import UploadCarousel from "./assets/UploadCarousel.jsx";
-import Subscription from "./assets/Subscription.jsx";
 import axios from "axios";
 import ProductOverView from "./assets/ProductOverView.jsx";
 import ProductUpdateForm from "./assets/ProductUpdateForm.jsx";
@@ -121,7 +120,7 @@ function App() {
               <Route path="/addcategory" element={<AddCategory />} />
               <Route path="/carousel" element={<UploadCarousel />} />
               <Route path="/discount" element={<AddDiscount />} />
-              <Route path="/subscription" element={<Subscription />} />
+              
               <Route
                 path="/order_over_view/:orderId"
                 element={<OrderOverView />}

@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { dataContext } from "../App";
-import cloudinaryFunc from "./coudinary";
 import { MdClose } from "react-icons/md";
-import { CustomLoading, SmallLoading } from "./Loading";
+import { SmallLoading } from "./Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEdit } from "react-icons/fa";
@@ -11,10 +10,10 @@ import { Maincategories } from "./itemSubCategory";
 
 const AddCategory = () => {
   const { api, token } = useContext(dataContext);
-  const [imgLoader, setImgLoader] = useState(false);
+  const [imgPreview, setImgPreview] = useState("");
+  const [categoryImg, setCategoryImg] = useState(null);
   const initialProductData = {
     productCategoryName: "",
-    productImage: "",
     available: "",
   };
   const [productData, setProductData] = useState(initialProductData);
@@ -26,28 +25,16 @@ const AddCategory = () => {
   const [spin, setSpin] = useState(false);
 
   // sending file to cloudinary function
-  const fileHandleFunc = async (file) => {
-    try {
-      setImgLoader(true);
-      const imageUrl = await cloudinaryFunc(file);
-      if (imageUrl) {
-        setProductData((prevData) => ({
-          ...prevData,
-          productImage: imageUrl,
-        }));
-        setImgLoader(false);
-      }
-    } catch (error) {
-      console.log(error);
-      setImgLoader(false);
-    }
+  const fileHandleFunc = (event) => {
+    const file = event.target.files[0];
+    setImgPreview(URL.createObjectURL(file));
+    setCategoryImg(file);
   };
 
   // remove product images function
-  const removeImageFunction = () => {
-    setProductData({
-      productImage: "",
-    });
+  function removeImageFunction(){
+    setImgPreview("");
+    setCategoryImg(null);
   };
 
   //product form Handle function
@@ -59,6 +46,12 @@ const AddCategory = () => {
     }));
   };
 
+  // form data 
+  const formData = new FormData();
+  formData.append("productCategoryName", productData.productCategoryName);
+  formData.append("available", productData.available);
+  formData.append("image", categoryImg);
+  
   // form Submit function
   const formSubmitFunc = async (event) => {
     event.preventDefault();
@@ -66,7 +59,7 @@ const AddCategory = () => {
     try {
       const res = await axios.post(
         `${api}/api/category/save-category-products`,
-        productData,
+        formData,
         {
           headers: {
             token: token,
@@ -74,13 +67,14 @@ const AddCategory = () => {
         }
       );
       if (res) {
-        toast.success("New product category added successfully");
+        toast.success("New category added successfully");
         setAddBtnSpinner(false);
         setProductData(initialProductData);
+        removeImageFunction();
       }
     } catch (error) {
       console.error(error);
-      toast.success("Not added try again ");
+      toast.error("Not added category try again ");
       setAddBtnSpinner(false);
     }
   };
@@ -118,7 +112,9 @@ const AddCategory = () => {
     // fecthing category products data
     const fetchCategoryData = async () => {
       try {
-        const res = await axios.get(`${api}/api/category/get-category-products`);
+        const res = await axios.get(
+          `${api}/api/category/get-category-products`
+        );
         if (res) {
           setCategoryData(res.data.retrievedProducts);
         }
@@ -210,25 +206,19 @@ const AddCategory = () => {
                 </label>
                 <div className="mt-2 flex justify-center rounded-lg border-2 border-dashed border-gray-900/25 px-6 py-10">
                   <div className="text-center">
-                    {imgLoader ? (
-                      <div className="flex items-center gap-3 h-[5rem] font-semibold text-gray-700">
-                        <SmallLoading /> Uploading...
-                      </div>
-                    ) : (
-                      <svg
-                        className="mx-auto size-20 text-gray-300"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        aria-hidden="true"
-                        data-slot="icon"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    )}
+                    <svg
+                      className="mx-auto size-20 text-gray-300"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      data-slot="icon"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
 
                     <div className="mt-4 flex text-sm/6 text-gray-600">
                       <label
@@ -248,11 +238,11 @@ const AddCategory = () => {
                     </div>
                   </div>
                 </div>
-                {productData.productImage && (
+                {categoryImg && (
                   <div className="flex flex-wrap gap-2 mt-4">
                     <div className="w-[6.5rem] lg:w-[9.5rem]  relative h-fit rounded">
                       <img
-                        src={productData.productImage}
+                        src={imgPreview}
                         className="rounded"
                         alt="item-image"
                       />
@@ -380,7 +370,11 @@ const AddCategory = () => {
           <>
             {/* category update section  */}
             {categoryData.length <= 0 ? (
-              <CustomLoading customHeight="h-[50vh]" />
+              <div className="flex justify-center items-center h-52">
+                <h5 className="font-semibold text-[1.2rem] lg:text-[1.3rem]">
+                  No categories
+                </h5>
+              </div>
             ) : (
               <div className="lg:flex lg:justify-center lg:flex-wrap lg:gap-2">
                 {categoryData.map((item) => (
@@ -390,7 +384,7 @@ const AddCategory = () => {
                   >
                     <img
                       className="w-[6rem] rounded lg:w-[9rem]"
-                      src={item.productImage}
+                      src={item.productImage.image}
                       alt="image"
                     />
                     <div>

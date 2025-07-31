@@ -62,7 +62,7 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`bg-gray-600 w-[100vw] h-[5.2rem] flex justify-around fixed top-0 left-0 items-center transition-transform duration-300 ${
+        className={`bg-black w-[100vw] h-[5.2rem] flex justify-around fixed top-0 left-0 items-center transition-transform duration-300 ${
           showNavbar ? "translate-y-0" : "-translate-y-full"
         } z-10`}
       >
@@ -72,10 +72,10 @@ const Navbar = () => {
           className="text-white cursor-pointer"
           onClick={() => setOffcanvas(true)}
         />
-        <div className="w-[5rem] md:w-[5rem]">
+        <div className="w-[9rem] md:w-[15rem]">
           <img
             className="md:w-full rounded-full"
-            src="/madly mart.png"
+            src="/madly mart.jpg"
             alt="dora-logo"
           />
         </div>
@@ -126,13 +126,13 @@ const Navbar = () => {
           >
             Orders
           </Link>
-          <Link
+          {/* <Link
             onClick={() => setOffcanvas(false)}
             to="/subscription"
             className="text-[1.2rem]"
           >
             Subscriptions
-          </Link>
+          </Link> */}
           <Link
             onClick={() => setOffcanvas(false)}
             to="/products"
