@@ -109,7 +109,7 @@ const Products = () => {
                     <Link to={`/products/product_over_view/${item._id}`} key={item._id} className='lg:w-[35%] flex border hover:shadow-gray-400 relative items-start gap-3 mb-3 shadow-md rounded shadow-gray-300 p-2'>
                       <div className='flex gap-2 w-[150px] overflow-auto rounded h-[130px]'>
                         {item.itemImage.map((itemImg) => (
-                          <img className='w-full rounded' key={itemImg} src={itemImg} alt={item.itemName} />
+                          <img className='w-full rounded' key={itemImg._id} src={itemImg.image} alt={item.itemName} />
                         ))
                         }
                       </div>

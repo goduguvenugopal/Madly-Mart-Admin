@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import cloudinaryFunc from "./coudinary";
 import { MdClose } from "react-icons/md";
-import { Loading, SmallLoading } from "../assets/Loading";
+import { SmallLoading } from "../assets/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { dataContext } from "../App";
@@ -24,15 +23,14 @@ import {
 const UploadProducts = () => {
   const { api, token } = useContext(dataContext);
   const inputFocus = useRef();
-  const [imgLoader, setImgLoader] = useState(false);
   const [tags, setTags] = useState("");
+  const [productImages, setProductImages] = useState([]);
   const initialProductData = {
     itemName: "",
     itemDescription: "",
     itemCost: "",
     itemHalfKgCost: "",
     itemKgCost: "",
-    itemImage: [],
     itemQty: "1",
     minOrderQty: "",
     itemWeight: [],
@@ -102,32 +100,19 @@ const UploadProducts = () => {
   };
 
   // sending file to cloudinary function
-  const fileHandleFunc = async (file) => {
-    try {
-      setImgLoader(true);
-      const imageUrl = await cloudinaryFunc(file);
-      if (imageUrl) {
-        setProductData((prevData) => ({
-          ...prevData,
-          itemImage: [...prevData.itemImage, imageUrl],
-        }));
-        setImgLoader(false);
-      }
-    } catch (error) {
-      console.log(error);
-      setImgLoader(false);
-    }
+  const fileHandleFunc = (event) => {
+    const filesArray = Array.from(event.target.files);
+    const newArray = filesArray.map((file) => ({
+      file,
+      image: URL.createObjectURL(file),
+    }));
+    setProductImages((prev) => [...prev, ...newArray]);
   };
 
   // remove product images function
   const removeImageFunction = (itemImg) => {
-    const remainImages = productData.itemImage.filter(
-      (item) => item !== itemImg
-    );
-    setProductData((prevData) => ({
-      ...prevData,
-      itemImage: remainImages,
-    }));
+    const remainImages = productImages.filter((item) => item.image !== itemImg);
+    setProductImages(remainImages);
   };
 
   // product weight add function
@@ -161,6 +146,39 @@ const UploadProducts = () => {
     }));
   };
 
+  console.log(productImages);
+  console.log(productData);
+  
+  // product form data
+  const formData = new FormData();
+
+  // Append simple fields
+  formData.append("itemName", productData.itemName);
+  formData.append("itemDescription", productData.itemDescription);
+  formData.append("itemCost", productData.itemCost);
+  formData.append("itemHalfKgCost", productData.itemHalfKgCost);
+  formData.append("itemKgCost", productData.itemKgCost);
+  formData.append("itemQty", productData.itemQty);
+  formData.append("minOrderQty", productData.minOrderQty);
+  formData.append("itemStock", productData.itemStock);
+  formData.append("itemCategory", productData.itemCategory);
+  formData.append("itemSubCategory", productData.itemSubCategory);
+  formData.append("offerCost", productData.offerCost);
+  formData.append("offerMessage", productData.offerMessage);
+ 
+
+  // Append arrays (as individual fields)
+productData.itemWeight.forEach((weight, index) => {
+  formData.append(`itemWeight[${index}]`, weight);
+});
+
+productData.productTags.forEach((tag, index) => {
+  formData.append(`productTags[${index}]`, tag);
+});
+
+  // append files as individual files
+  productImages.forEach((img) => formData.append("images", img.file));
+
   // form submit function
   const formSubmitFunc = async (event) => {
     event.preventDefault();
@@ -171,7 +189,7 @@ const UploadProducts = () => {
         setAddBtnSpinner(true);
         const res = await axios.post(
           `${api}/api/product/save-product`,
-          productData,
+           formData,
           {
             headers: {
               token: token,
@@ -181,6 +199,7 @@ const UploadProducts = () => {
         if (res) {
           toast.success("Product added successfully");
           setProductData(initialProductData);
+          setProductImages([])
           setAddBtnSpinner(false);
         }
       } catch (error) {
@@ -209,31 +228,25 @@ const UploadProducts = () => {
               htmlFor="cover-photo"
               className="block text-sm/6 font-medium text-gray-900"
             >
-              Product photo <span className="text-red-500">*</span>
+              Product photos <span className="text-red-500">*</span>
             </label>
             <div className="mt-2 flex justify-center rounded-lg border-2 border-dashed border-gray-900/25 px-6 py-10">
               <div className="text-center">
-                {imgLoader ? (
-                  <div className="flex items-center gap-3 h-[5rem] font-semibold text-gray-700">
-                    <SmallLoading /> Uploading...
-                  </div>
-                ) : (
-                  <svg
-                    className="mx-auto size-20 text-gray-300"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    data-slot="icon"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                )}
+                <svg
+                  className="mx-auto size-20 text-gray-300"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  data-slot="icon"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
 
-                <div className="mt-4 flex text-sm/6 text-gray-600">
+                <div className="mt-4 flex flex-col text-sm/6 text-gray-600">
                   <label
                     htmlFor="itemImage"
                     className="relative cursor-pointer text-indigo-500 hover:bg-indigo-600 hover:border-white select-none hover:text-white border-2 border-indigo-500 p-1 rounded-md bg-white font-semibold "
@@ -244,22 +257,28 @@ const UploadProducts = () => {
                       name="itemImage"
                       type="file"
                       required
+                      accept="image/jpeg, image/png, image/jpg, image/webp"
+                      multiple
                       onChange={fileHandleFunc}
                       className="sr-only"
                     />
                   </label>
+                  <p className="pt-2 text-[1rem] text-gray-600">
+                    {" "}
+                    only accepts JPG, PNG, JPEG, WEBP image files
+                  </p>
                 </div>
               </div>
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
-              {productData.itemImage.map((item, index) => (
+              {productImages.map((item, index) => (
                 <div
                   key={index}
                   className="w-[6.5rem] lg:w-[9.5rem]  relative h-fit rounded"
                 >
-                  <img src={item} className="rounded" alt="item-image" />
+                  <img src={item.image} className="rounded" alt="item-image" />
                   <MdClose
-                    onClick={() => removeImageFunction(item)}
+                    onClick={() => removeImageFunction(item.image)}
                     className="rounded-full cursor-pointer h-6 w-6 p-1 absolute top-1 hover:bg-indigo-700 right-1 bg-black text-white"
                   />
                 </div>
@@ -274,7 +293,7 @@ const UploadProducts = () => {
                   htmlFor="itemName"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Item Name <span className="text-red-500">*</span>
+                  Name <span className="text-red-500">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1  outline-gray-500 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -297,7 +316,7 @@ const UploadProducts = () => {
                   htmlFor="itemCost"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Item Cost <span className="text-red-500">*</span>
+                  Cost <span className="text-red-500">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1  outline-gray-500 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -319,7 +338,7 @@ const UploadProducts = () => {
                   htmlFor="itemDescription"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Item Description
+                  Description
                 </label>
                 <div className="mt-2">
                   <textarea
@@ -333,12 +352,12 @@ const UploadProducts = () => {
                   />
                 </div>
               </div>
-                <div className="col-span-full">
+              <div className="col-span-full">
                 <label
                   htmlFor="offerMessage"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Item offer message
+                  offer message
                 </label>
                 <div className="mt-2">
                   <textarea
@@ -347,7 +366,7 @@ const UploadProducts = () => {
                     value={productData.offerMessage}
                     id="offerMessage"
                     rows={3}
-                    placeholder="Example :- Reduced Prices – ₹70 per Litre & ₹35 per Half Litre!"
+                    placeholder="Example :- Reduced Prices 50% discount on each product"
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                   />
                 </div>
@@ -361,7 +380,7 @@ const UploadProducts = () => {
                     htmlFor="itemHalfKgCost"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Half Kg Cost
+                    Half Kg Cost
                   </label>
                   <div className="mt-2">
                     <input
@@ -380,7 +399,7 @@ const UploadProducts = () => {
                     htmlFor="itemKgCost"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Kg Cost
+                    Kg Cost
                   </label>
                   <div className="mt-2">
                     <input
@@ -400,7 +419,7 @@ const UploadProducts = () => {
                     htmlFor="itemStock"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Stock <span className="text-red-500">*</span>
+                    Stock <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-2">
                     <input
@@ -441,7 +460,7 @@ const UploadProducts = () => {
                     htmlFor="itemCategory"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Category <span className="text-red-500">*</span>
+                    Category <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select
@@ -483,7 +502,7 @@ const UploadProducts = () => {
                     htmlFor="itemSubCategory"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Sub Category <span className="text-red-500">*</span>
+                    Sub Category <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select

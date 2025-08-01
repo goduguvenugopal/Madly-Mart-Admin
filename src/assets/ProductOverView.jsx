@@ -48,7 +48,7 @@ const ProductOverView = () => {
     if (isOkay) {
       setDelSpin(true);
       try {
-        const res = await axios.delete(`${api}/product/delete-product/${id}`, {
+        const res = await axios.delete(`${api}/api/product/delete-product/${id}`, {
           headers: {
             token: token,
           },
@@ -122,7 +122,7 @@ const ProductOverView = () => {
             <div className="lg:flex lg:items-start lg:justify-between">
               <div className=" lg:w-2/4">
                 <img
-                  src={imgUrl}
+                  src={imgUrl.image}
                   alt={product.itemName}
                   className="rounded-md w-full"
                 />
@@ -130,8 +130,8 @@ const ProductOverView = () => {
                   {product?.itemImage?.map((item) => (
                     <img
                       onClick={() => setImgUrl(item)}
-                      key={item}
-                      src={item}
+                      key={item._id}
+                      src={item.image}
                       alt="product-img"
                       className="w-[100px] rounded cursor-pointer border-2 hover:border-blue-600"
                     />

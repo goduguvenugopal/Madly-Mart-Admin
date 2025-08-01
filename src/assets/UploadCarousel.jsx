@@ -259,7 +259,7 @@ const UploadCarousel = () => {
                       />
                     </svg>
 
-                    <div className="mt-4 flex text-sm/6 text-gray-600">
+                    <div className="mt-4 flex flex-col text-sm/6 text-gray-600">
                       <label
                         htmlFor="carouselImage"
                         className="relative cursor-pointer text-indigo-500 hover:bg-indigo-600 hover:border-white select-none hover:text-white border-2 border-indigo-500 p-1 rounded-md bg-white font-semibold "
@@ -270,10 +270,15 @@ const UploadCarousel = () => {
                           name="carouselImage"
                           type="file"
                           multiple
+                          accept="image/jpeg, image/png, image/jpg, image/webp"
                           onChange={fileHandleFunc}
                           className="sr-only"
                         />
                       </label>
+                      <p className="pt-2 text-[1rem] text-gray-600">
+                        {" "}
+                        only accepts JPG, PNG, JPEG, WEBP image files
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -455,7 +460,7 @@ const UploadCarousel = () => {
                                   />
                                 </svg>
 
-                                <div className="mt-4 flex text-sm/6 text-gray-600">
+                                <div className="mt-4 flex flex-col text-sm/6 text-gray-600">
                                   <label
                                     htmlFor="carouselImage"
                                     className="relative cursor-pointer text-indigo-500 hover:bg-indigo-600 hover:border-white select-none hover:text-white border-2 border-indigo-500 p-1 rounded-md bg-white font-semibold "
@@ -466,10 +471,16 @@ const UploadCarousel = () => {
                                       name="carouselImage"
                                       type="file"
                                       multiple
+                                        accept="image/jpeg, image/png, image/jpg, image/webp"
                                       onChange={updateFileHandleFunc}
                                       className="sr-only"
                                     />
                                   </label>
+                                  <p className="pt-2 text-[1rem] text-gray-600">
+                                    {" "}
+                                    only accepts JPG, PNG, JPEG, WEBP image
+                                    files
+                                  </p>
                                 </div>
                               </div>
                             </div>

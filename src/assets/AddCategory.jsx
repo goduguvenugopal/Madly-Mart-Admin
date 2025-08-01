@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { dataContext } from "../App";
 import { MdClose } from "react-icons/md";
-import { SmallLoading } from "./Loading";
+import { CustomLoading, SmallLoading } from "./Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEdit } from "react-icons/fa";
@@ -23,6 +23,7 @@ const AddCategory = () => {
   const [updateId, setUpdateId] = useState("");
   const [available, setAvailable] = useState("");
   const [spin, setSpin] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   // sending file to cloudinary function
   const fileHandleFunc = (event) => {
@@ -32,10 +33,10 @@ const AddCategory = () => {
   };
 
   // remove product images function
-  function removeImageFunction(){
+  function removeImageFunction() {
     setImgPreview("");
     setCategoryImg(null);
-  };
+  }
 
   //product form Handle function
   const formHandleFunc = (e) => {
@@ -46,12 +47,12 @@ const AddCategory = () => {
     }));
   };
 
-  // form data 
+  // form data
   const formData = new FormData();
   formData.append("productCategoryName", productData.productCategoryName);
   formData.append("available", productData.available);
   formData.append("image", categoryImg);
-  
+
   // form Submit function
   const formSubmitFunc = async (event) => {
     event.preventDefault();
@@ -112,6 +113,7 @@ const AddCategory = () => {
     // fecthing category products data
     const fetchCategoryData = async () => {
       try {
+        setLoader(true);
         const res = await axios.get(
           `${api}/api/category/get-category-products`
         );
@@ -120,6 +122,8 @@ const AddCategory = () => {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoader(false);
       }
     };
     if (!btnToggle) {
@@ -134,6 +138,8 @@ const AddCategory = () => {
     );
     if (isOkay) {
       try {
+        setLoader(true);
+
         const res = await axios.delete(
           `${api}/api/category/delete-category-products/${categoryId}`,
           {
@@ -152,6 +158,8 @@ const AddCategory = () => {
       } catch (error) {
         console.error(error);
         toast.error("Category product not deletd try again");
+      } finally {
+        setLoader(false);
       }
     }
   };
@@ -220,7 +228,7 @@ const AddCategory = () => {
                       />
                     </svg>
 
-                    <div className="mt-4 flex text-sm/6 text-gray-600">
+                    <div className="mt-4 flex flex-col text-sm/6 text-gray-600">
                       <label
                         htmlFor="itemImage"
                         className="relative cursor-pointer text-indigo-500 hover:bg-indigo-600 hover:border-white select-none hover:text-white border-2 border-indigo-500 p-1 rounded-md bg-white font-semibold "
@@ -231,10 +239,15 @@ const AddCategory = () => {
                           name="itemImage"
                           type="file"
                           required
+                          accept="image/jpeg, image/png, image/jpg, image/webp"
                           onChange={fileHandleFunc}
                           className="sr-only"
                         />
                       </label>
+                      <p className="pt-2 text-[1rem] text-gray-600">
+                        {" "}
+                        only accepts JPG, PNG, JPEG, WEBP image files
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -368,96 +381,102 @@ const AddCategory = () => {
           </>
         ) : (
           <>
-            {/* category update section  */}
-            {categoryData.length <= 0 ? (
-              <div className="flex justify-center items-center h-52">
-                <h5 className="font-semibold text-[1.2rem] lg:text-[1.3rem]">
-                  No categories
-                </h5>
-              </div>
+            {loader ? (
+              <CustomLoading customHeight={"h-52"} />
             ) : (
-              <div className="lg:flex lg:justify-center lg:flex-wrap lg:gap-2">
-                {categoryData.map((item) => (
-                  <div
-                    className="flex border relative items-start gap-3 mb-3 shadow-md rounded shadow-gray-300 p-2 lg:w-2/4"
-                    key={item._id}
-                  >
-                    <img
-                      className="w-[6rem] rounded lg:w-[9rem]"
-                      src={item.productImage.image}
-                      alt="image"
-                    />
-                    <div>
-                      <h5>
-                        Category :{" "}
-                        <span className="font-semibold capitalize">
-                          {item.productCategoryName}
-                        </span>
-                      </h5>
-                      <h6>
-                        Available :{" "}
-                        <span className="font-semibold capitalize">
-                          {item.available}
-                        </span>
-                      </h6>
-                    </div>
-                    <FaEdit
-                      onClick={() => setUpdateId(item._id)}
-                      size={20}
-                      className="text-blue-600 hover:text-green-600 cursor-pointer absolute right-3"
-                    />
-                    <RiDeleteBin6Line
-                      onClick={() => deleteCategoryFunc(item._id)}
-                      size={20}
-                      className="hover:text-red-600 cursor-pointer absolute right-3 top-11 text-gray-600"
-                    />
+              <>
+                {/* category update section  */}
+                {categoryData.length <= 0 ? (
+                  <div className="flex justify-center items-center h-52">
+                    <h5 className="font-semibold text-[1.2rem] lg:text-[1.3rem]">
+                      No categories
+                    </h5>
                   </div>
-                ))}
-
-                {/* category update modal  */}
-                {updateId && (
-                  <div className="fixed  top-0 left-0 bg-gray-700 bg-opacity-75 flex h-screen w-screen items-center justify-center p-10">
-                    <div className="bg-white p-3 rounded w-[300px] ">
-                      <h5 className="text-[1.1rem] font-semibold">
-                        Select the category options
-                      </h5>
-                      <select
-                        onChange={(e) => setAvailable(e.target.value)}
-                        value={available}
-                        className="border-2 border-blue-600 mt-3 rounded w-full h-10"
+                ) : (
+                  <div className="lg:flex lg:justify-center lg:flex-wrap lg:gap-2">
+                    {categoryData.map((item) => (
+                      <div
+                        className="flex border relative items-start gap-3 mb-3 shadow-md rounded shadow-gray-300 p-2 lg:w-2/4"
+                        key={item._id}
                       >
-                        <option disabled value="">
-                          Select the options
-                        </option>
-                        <option value="no">Not Available</option>
-                        <option value="yes">Available</option>
-                      </select>
-                      {spin ? (
-                        <button className="bg-black mt-5 w-full text-white rounded p-2 flex items-center gap-2 justify-center">
-                          <SmallLoading /> Updating...
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() =>
-                            updateCategoryFunc({ available: available })
-                          }
-                          className="bg-black mt-5 w-full text-white rounded hover:bg-blue-500 p-2"
-                        >
-                          Update
-                        </button>
-                      )}
+                        <img
+                          className="w-[6rem] rounded lg:w-[9rem]"
+                          src={item.productImage.image}
+                          alt="image"
+                        />
+                        <div>
+                          <h5>
+                            Category :{" "}
+                            <span className="font-semibold capitalize">
+                              {item.productCategoryName}
+                            </span>
+                          </h5>
+                          <h6>
+                            Available :{" "}
+                            <span className="font-semibold capitalize">
+                              {item.available}
+                            </span>
+                          </h6>
+                        </div>
+                        <FaEdit
+                          onClick={() => setUpdateId(item._id)}
+                          size={20}
+                          className="text-blue-600 hover:text-green-600 cursor-pointer absolute right-3"
+                        />
+                        <RiDeleteBin6Line
+                          onClick={() => deleteCategoryFunc(item._id)}
+                          size={20}
+                          className="hover:text-red-600 cursor-pointer absolute right-3 top-11 text-gray-600"
+                        />
+                      </div>
+                    ))}
 
-                      <button
-                        onClick={() => setUpdateId("")}
-                        className="bg-red-600 mt-3 w-full text-white rounded hover:bg-red-700 p-2"
-                      >
-                        Close
-                      </button>
-                    </div>
+                    {/* category update modal  */}
+                    {updateId && (
+                      <div className="fixed  top-0 left-0 bg-gray-700 bg-opacity-75 flex h-screen w-screen items-center justify-center p-10">
+                        <div className="bg-white p-3 rounded w-[300px] ">
+                          <h5 className="text-[1.1rem] font-semibold">
+                            Select the category options
+                          </h5>
+                          <select
+                            onChange={(e) => setAvailable(e.target.value)}
+                            value={available}
+                            className="border-2 border-blue-600 mt-3 rounded w-full h-10"
+                          >
+                            <option disabled value="">
+                              Select the options
+                            </option>
+                            <option value="no">Not Available</option>
+                            <option value="yes">Available</option>
+                          </select>
+                          {spin ? (
+                            <button className="bg-black mt-5 w-full text-white rounded p-2 flex items-center gap-2 justify-center">
+                              <SmallLoading /> Updating...
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() =>
+                                updateCategoryFunc({ available: available })
+                              }
+                              className="bg-black mt-5 w-full text-white rounded hover:bg-blue-500 p-2"
+                            >
+                              Update
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => setUpdateId("")}
+                            className="bg-red-600 mt-3 w-full text-white rounded hover:bg-red-700 p-2"
+                          >
+                            Close
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
+              </>
+            )}{" "}
           </>
         )}
       </div>
