@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import cloudinaryFunc from "./coudinary";
 import { MdClose } from "react-icons/md";
-import { Loading, SmallLoading } from "../assets/Loading";
+import { SmallLoading } from "../assets/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { dataContext } from "../App";
@@ -25,17 +24,16 @@ import {
 const ProductUpdateForm = () => {
   const { id, product } = useOutletContext();
   const { api, token } = useContext(dataContext);
+  const [productImages, setProductImages] = useState([]);
   const inputFocus = useRef();
-  const [imgLoader, setImgLoader] = useState(false);
   const [tags, setTags] = useState("");
-
+  const [toKeepImages, setToKeepImages] = useState([]);
   const initialProductData = {
     itemName: product.itemName,
     itemDescription: product.itemDescription,
     itemCost: product.itemCost,
     itemHalfKgCost: product.itemHalfKgCost,
     itemKgCost: product.itemKgCost,
-    itemImage: product.itemImage,
     itemQty: "1",
     minOrderQty: product.minOrderQty,
     itemWeight: product.itemWeight,
@@ -49,6 +47,10 @@ const ProductUpdateForm = () => {
   const [productData, setProductData] = useState(initialProductData);
   const [addBtnSpinner, setAddBtnSpinner] = useState(false);
   const [itemSubCategory, setItemSubCategory] = useState([]);
+
+  useEffect(() => {
+    setProductImages(product.itemImage);
+  }, [product]);
 
   // displaying sub category names with conditions
   useEffect(() => {
@@ -104,33 +106,26 @@ const ProductUpdateForm = () => {
   };
 
   // sending file to cloudinary function
-  const fileHandleFunc = async (file) => {
-    try {
-      setImgLoader(true);
-      const imageUrl = await cloudinaryFunc(file);
-      if (imageUrl) {
-        setProductData((prevData) => ({
-          ...prevData,
-          itemImage: [...prevData.itemImage, imageUrl],
-        }));
-        setImgLoader(false);
-      }
-    } catch (error) {
-      console.log(error);
-      setImgLoader(false);
-    }
+  const fileHandleFunc = (event) => {
+    const filesArray = Array.from(event.target.files);
+    const newArray = filesArray.map((file) => ({
+      file,
+      image: URL.createObjectURL(file),
+    }));
+    setProductImages((prev) => [...prev, ...newArray]);
   };
+ 
 
   // remove product images function
   const removeImageFunction = (itemImg) => {
-    const remainImages = productData.itemImage.filter(
-      (item) => item !== itemImg
-    );
-    setProductData((prevData) => ({
-      ...prevData,
-      itemImage: remainImages,
-    }));
+    const remainImages = productImages.filter((item) => item.image !== itemImg);
+    setProductImages(remainImages);
+    const filteredIds = remainImages
+      .filter((item) => item.public_id)
+      .map((id) => id.public_id);
+    setToKeepImages(filteredIds);
   };
+ 
 
   // product weight add function
   const addWeightFunction = (event) => {
@@ -163,6 +158,36 @@ const ProductUpdateForm = () => {
     }));
   };
 
+  // product form data
+  const formData = new FormData();
+
+  // Append simple fields
+  formData.append("itemName", productData.itemName);
+  formData.append("itemDescription", productData.itemDescription);
+  formData.append("itemCost", productData.itemCost);
+  formData.append("itemHalfKgCost", productData.itemHalfKgCost);
+  formData.append("itemKgCost", productData.itemKgCost);
+  formData.append("itemQty", productData.itemQty);
+  formData.append("minOrderQty", productData.minOrderQty);
+  formData.append("itemStock", productData.itemStock);
+  formData.append("itemCategory", productData.itemCategory);
+  formData.append("itemSubCategory", productData.itemSubCategory);
+  formData.append("offerCost", productData.offerCost);
+  formData.append("offerMessage", productData.offerMessage);
+  formData.append("toKeepImages", toKeepImages);
+
+  // Append arrays (as individual fields)
+  productData.itemWeight.forEach((weight, index) => {
+    formData.append(`itemWeight[${index}]`, weight);
+  });
+
+  productData.productTags.forEach((tag, index) => {
+    formData.append(`productTags[${index}]`, tag);
+  });
+
+  // append files as individual files
+  productImages.forEach((img) => formData.append("images", img.file));
+
   //product details form submit function
   const formSubmitFunc = async (event) => {
     event.preventDefault();
@@ -170,7 +195,7 @@ const ProductUpdateForm = () => {
       setAddBtnSpinner(true);
       const res = await axios.put(
         `${api}/api/product/update-product-details/${id}`,
-        productData,
+        formData,
         {
           headers: {
             token: token,
@@ -202,7 +227,7 @@ const ProductUpdateForm = () => {
               htmlFor="cover-photo"
               className="block text-sm/6 font-medium text-gray-900"
             >
-              Product photo
+              Product photos
             </label>
             <div className="mt-2 flex justify-center rounded-lg border-2 border-dashed border-gray-900/25 px-6 py-10">
               <div className="text-center">
@@ -236,7 +261,7 @@ const ProductUpdateForm = () => {
                       className="sr-only"
                     />
                   </label>
-                    <p className="pt-2 text-[1rem] text-gray-600">
+                  <p className="pt-2 text-[1rem] text-gray-600">
                     {" "}
                     only accepts JPG, PNG, JPEG, WEBP image files
                   </p>
@@ -244,14 +269,14 @@ const ProductUpdateForm = () => {
               </div>
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
-              {productData.itemImage.map((item, index) => (
+              {productImages.map((item, index) => (
                 <div
                   key={index}
                   className="w-[6.5rem] lg:w-[9.5rem]  relative h-fit rounded"
                 >
-                  <img src={item} className="rounded" alt="item-image" />
+                  <img src={item.image} className="rounded" alt="item-image" />
                   <MdClose
-                    onClick={() => removeImageFunction(item)}
+                    onClick={() => removeImageFunction(item.image)}
                     className="rounded-full cursor-pointer h-6 w-6 p-1 absolute top-1 hover:bg-indigo-700 right-1 bg-black text-white"
                   />
                 </div>
@@ -266,7 +291,7 @@ const ProductUpdateForm = () => {
                   htmlFor="itemName"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Item Name
+                  Name
                 </label>
                 <div className="mt-2">
                   <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1  outline-gray-500 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -288,7 +313,7 @@ const ProductUpdateForm = () => {
                   htmlFor="itemCost"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Item Cost
+                  Cost
                 </label>
                 <div className="mt-2">
                   <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1  outline-gray-500 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -309,7 +334,7 @@ const ProductUpdateForm = () => {
                   htmlFor="itemDescription"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Item Description
+                  Description
                 </label>
                 <div className="mt-2">
                   <textarea
@@ -328,7 +353,7 @@ const ProductUpdateForm = () => {
                   htmlFor="offerMessage"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Item offer message
+                  offer message
                 </label>
                 <div className="mt-2">
                   <textarea
@@ -351,7 +376,7 @@ const ProductUpdateForm = () => {
                     htmlFor="itemHalfKgCost"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Half Kg Cost
+                    Half Kg Cost
                   </label>
                   <div className="mt-2">
                     <input
@@ -370,7 +395,7 @@ const ProductUpdateForm = () => {
                     htmlFor="itemKgCost"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Kg Cost
+                    Kg Cost
                   </label>
                   <div className="mt-2">
                     <input
@@ -390,7 +415,7 @@ const ProductUpdateForm = () => {
                     htmlFor="itemStock"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Stock
+                    Stock
                   </label>
                   <div className="mt-2">
                     <input
@@ -430,7 +455,7 @@ const ProductUpdateForm = () => {
                     htmlFor="itemCategory"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Category
+                    Category
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select
@@ -471,7 +496,7 @@ const ProductUpdateForm = () => {
                     htmlFor="itemSubCategory"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Item Sub Category
+                    Sub Category
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select

@@ -99,7 +99,7 @@ const UploadProducts = () => {
     inputFocus.current.focus();
   };
 
-  // sending file to cloudinary function
+  // files handling 
   const fileHandleFunc = (event) => {
     const filesArray = Array.from(event.target.files);
     const newArray = filesArray.map((file) => ({
@@ -146,8 +146,7 @@ const UploadProducts = () => {
     }));
   };
 
-  console.log(productImages);
-  console.log(productData);
+ 
   
   // product form data
   const formData = new FormData();
