@@ -3,7 +3,7 @@ import { dataContext } from "../App";
 import axios from "axios";
 import { FaEdit, FaSearch } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
-import { Loading, SmallLoading } from "./Loading";
+import { Loading, SmallLoading } from "./components/Loading";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 const Admin = () => {
@@ -96,11 +96,11 @@ const Admin = () => {
     const message = confirm("User will be deleted permanently, are you sure ?");
     if (message) {
       try {
-        const res = await axios.delete(`${api}/user/delete-user/${userID}` ,{
-            headers: {
-              token: token,
-            },
-          });
+        const res = await axios.delete(`${api}/user/delete-user/${userID}`, {
+          headers: {
+            token: token,
+          },
+        });
         if (res) {
           const remainUsers = filter.filter((item) => item._id !== userID);
           setFilter(remainUsers);

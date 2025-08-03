@@ -13,10 +13,12 @@ import UploadCarousel from "./assets/UploadCarousel.jsx";
 import axios from "axios";
 import ProductOverView from "./assets/ProductOverView.jsx";
 import ProductUpdateForm from "./assets/ProductUpdateForm.jsx";
-import PageNotFound from "./assets/PageNotFound.jsx";
+import PageNotFound from "./assets/components/PageNotFound.jsx";
 import OrderOverView from "./assets/OrderOverView.jsx";
 import AddDiscount from "./assets/AddDiscount.jsx";
 import Visitors from "./assets/Visitors.jsx";
+import Payments from "./assets/components/Payments.jsx";
+import FailedPayments from "./assets/components/FailedPayments.jsx";
 
 export const dataContext = createContext();
 
@@ -25,7 +27,7 @@ function App() {
   const analytics_api = import.meta.env.VITE_ANALYTICS_API;
   const [token, setToken] = useState("");
   const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
   const [orderSpin, setOrderSpin] = useState(false);
   const [reload, setReload] = useState(false);
@@ -41,7 +43,7 @@ function App() {
   useEffect(() => {
     // fetching user details
     const fetchUser = async () => {
-      setLoading(true);
+   
       try {
         const response = await axios.get(`${api}/api/user/get-single-user`, {
           headers: {
@@ -120,12 +122,13 @@ function App() {
               <Route path="/addcategory" element={<AddCategory />} />
               <Route path="/carousel" element={<UploadCarousel />} />
               <Route path="/discount" element={<AddDiscount />} />
-              
+              <Route path="/payments" element={<Payments/>} />
               <Route
                 path="/order_over_view/:orderId"
                 element={<OrderOverView />}
               />
               <Route path="/visitors" element={<Visitors />} />
+              <Route path="/failedpayments" element={<FailedPayments />} />
               <Route path="*" element={<PageNotFound />} />
             </>
           ) : (

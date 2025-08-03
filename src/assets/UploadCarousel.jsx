@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { dataContext } from "../App";
 import { MdClose } from "react-icons/md";
-import { CustomLoading, Loading, SmallLoading } from "./Loading";
+import { CustomLoading, Loading, SmallLoading } from "./components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEdit } from "react-icons/fa";
@@ -471,7 +471,7 @@ const UploadCarousel = () => {
                                       name="carouselImage"
                                       type="file"
                                       multiple
-                                        accept="image/jpeg, image/png, image/jpg, image/webp"
+                                      accept="image/jpeg, image/png, image/jpg, image/webp"
                                       onChange={updateFileHandleFunc}
                                       className="sr-only"
                                     />

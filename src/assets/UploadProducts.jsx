@@ -1,24 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
-import { SmallLoading } from "../assets/Loading";
+import { SmallLoading } from "./components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { dataContext } from "../App";
-import {
-  milkBasedItems,
-  vegetables,
-  meats,
-  vegFoodBasedNames,
-  nonVegFoods,
-  indianCoolDrinks,
-  indianPickles,
-  indianSpices,
-  indianSweets,
-  Maincategories,
-  bakeryItems,
-  snacksList,
-  indianGroceryItems,
-} from "./itemSubCategory";
+import { Maincategories } from "./data";
+import useCategoryOptions from "./components/useCategoryOptions";
 
 const UploadProducts = () => {
   const { api, token } = useContext(dataContext);
@@ -44,36 +31,14 @@ const UploadProducts = () => {
 
   const [productData, setProductData] = useState(initialProductData);
   const [addBtnSpinner, setAddBtnSpinner] = useState(false);
+  const { subCategoryOptions } = useCategoryOptions({ productData });
   const [itemSubCategory, setItemSubCategory] = useState([]);
 
-  // displaying sub category names with conditions
   useEffect(() => {
-    if (productData.itemCategory === "milk") {
-      setItemSubCategory(milkBasedItems);
-    } else if (productData.itemCategory === "vegetables") {
-      setItemSubCategory(vegetables);
-    } else if (productData.itemCategory === "food") {
-      setItemSubCategory(vegFoodBasedNames);
-    } else if (productData.itemCategory === "meat") {
-      setItemSubCategory(meats);
-    } else if (productData.itemCategory === "non-veg") {
-      setItemSubCategory(nonVegFoods);
-    } else if (productData.itemCategory === "beverages") {
-      setItemSubCategory(indianCoolDrinks);
-    } else if (productData.itemCategory === "pickles") {
-      setItemSubCategory(indianPickles);
-    } else if (productData.itemCategory === "bakery") {
-      setItemSubCategory(bakeryItems);
-    } else if (productData.itemCategory === "sweets") {
-      setItemSubCategory(indianSweets);
-    } else if (productData.itemCategory === "spices") {
-      setItemSubCategory(indianSpices);
-    } else if (productData.itemCategory === "snacks") {
-      setItemSubCategory(snacksList);
-    } else if (productData.itemCategory === "grocery") {
-      setItemSubCategory(indianGroceryItems);
-    }
-  }, [productData.itemCategory]);
+    setItemSubCategory(subCategoryOptions);
+  }, [subCategoryOptions]);
+
+   
 
   // Add tags into the productTags array
   const addTagsInArray = () => {
@@ -99,7 +64,7 @@ const UploadProducts = () => {
     inputFocus.current.focus();
   };
 
-  // files handling 
+  // files handling
   const fileHandleFunc = (event) => {
     const filesArray = Array.from(event.target.files);
     const newArray = filesArray.map((file) => ({
@@ -146,8 +111,6 @@ const UploadProducts = () => {
     }));
   };
 
- 
-  
   // product form data
   const formData = new FormData();
 
@@ -164,16 +127,15 @@ const UploadProducts = () => {
   formData.append("itemSubCategory", productData.itemSubCategory);
   formData.append("offerCost", productData.offerCost);
   formData.append("offerMessage", productData.offerMessage);
- 
 
   // Append arrays (as individual fields)
-productData.itemWeight.forEach((weight, index) => {
-  formData.append(`itemWeight[${index}]`, weight);
-});
+  productData.itemWeight.forEach((weight, index) => {
+    formData.append(`itemWeight[${index}]`, weight);
+  });
 
-productData.productTags.forEach((tag, index) => {
-  formData.append(`productTags[${index}]`, tag);
-});
+  productData.productTags.forEach((tag, index) => {
+    formData.append(`productTags[${index}]`, tag);
+  });
 
   // append files as individual files
   productImages.forEach((img) => formData.append("images", img.file));
@@ -188,7 +150,7 @@ productData.productTags.forEach((tag, index) => {
         setAddBtnSpinner(true);
         const res = await axios.post(
           `${api}/api/product/save-product`,
-           formData,
+          formData,
           {
             headers: {
               token: token,
@@ -198,7 +160,7 @@ productData.productTags.forEach((tag, index) => {
         if (res) {
           toast.success("Product added successfully");
           setProductData(initialProductData);
-          setProductImages([])
+          setProductImages([]);
           setAddBtnSpinner(false);
         }
       } catch (error) {
@@ -517,7 +479,7 @@ productData.productTags.forEach((tag, index) => {
                         Select the Sub Category
                       </option>
 
-                      {itemSubCategory.map((item, index) => (
+                      {itemSubCategory?.map((item, index) => (
                         <option key={index} value={item}>
                           {item}
                         </option>

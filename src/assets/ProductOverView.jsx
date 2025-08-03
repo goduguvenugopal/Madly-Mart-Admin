@@ -2,10 +2,10 @@ import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import { useParams, Link, Outlet, useNavigate } from "react-router-dom";
 import { dataContext } from "../App";
-import { CustomLoading, SmallLoading } from "./Loading";
+import { CustomLoading, SmallLoading } from "./components/Loading";
 
 const ProductOverView = () => {
-  const { api , token } = useContext(dataContext);
+  const { api, token } = useContext(dataContext);
   const { id } = useParams();
   const [btnToggle, setBtnToggle] = useState(true);
   const [product, setProduct] = useState({});
@@ -19,7 +19,9 @@ const ProductOverView = () => {
     const getProduct = async () => {
       setSpin(true);
       try {
-        const res = await axios.get(`${api}/api/product/get-single-product/${id}`);
+        const res = await axios.get(
+          `${api}/api/product/get-single-product/${id}`
+        );
         if (res) {
           setProduct(res.data.retrievedSingleProduct);
           setSpin(false);
@@ -48,11 +50,14 @@ const ProductOverView = () => {
     if (isOkay) {
       setDelSpin(true);
       try {
-        const res = await axios.delete(`${api}/api/product/delete-product/${id}`, {
-          headers: {
-            token: token,
-          },
-        });
+        const res = await axios.delete(
+          `${api}/api/product/delete-product/${id}`,
+          {
+            headers: {
+              token: token,
+            },
+          }
+        );
         if (res) {
           setDelSpin(false);
           navigate("/products");
@@ -126,7 +131,7 @@ const ProductOverView = () => {
                   alt={product.itemName}
                   className="rounded-md w-full"
                 />
-                <div className="flex w-full gap-2 flex-wrap mt-5">
+                <div className="flex w-full gap-2 mt-5 overflow-auto">
                   {product?.itemImage?.map((item) => (
                     <img
                       onClick={() => setImgUrl(item)}
@@ -154,7 +159,7 @@ const ProductOverView = () => {
                     ₹{product.itemCost}
                   </span>
                 </h5>
-                  <h5 className="text-blue-800 mt-2 text-[1.1rem]">
+                <h5 className="text-blue-800 mt-2 text-[1.1rem]">
                   Item offer message :{" "}
                   <span className="text-black font-semibold te">
                     {product?.offerMessage}

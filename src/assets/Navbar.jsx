@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { FaBars, FaDownload } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { dataContext } from "../App";
 
 const Navbar = () => {
@@ -11,7 +11,10 @@ const Navbar = () => {
   const [showNavbar, setShowNavbar] = useState(true);
   const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
   const { user, token, setToken } = useContext(dataContext);
+  const location = useLocation(null);
 
+  
+  
   useEffect(() => {
     const handleDocumentClick = () => {
       setToggle(false);
@@ -62,29 +65,78 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`bg-black w-[100vw] h-[5.2rem] flex justify-around fixed top-0 left-0 items-center transition-transform duration-300 ${
+        className={`bg-white w-[100vw] h-[5.2rem] flex justify-between px-4 lg:px-8 lg:justify-between fixed top-0 left-0 items-center shadow-md transition-transform duration-300  ${
           showNavbar ? "translate-y-0" : "-translate-y-full"
         } z-10`}
       >
-        <FaBars
-          size={25}
-          title="open menu"
-          className="text-white cursor-pointer"
-          onClick={() => setOffcanvas(true)}
-        />
-        <div className="w-[9rem] md:w-[15rem]">
+        {/* logo section  */}
+        <div className="w-[11rem] md:w-[15rem]">
           <img
-            className="md:w-full rounded-full"
-            src="/madly mart.jpg"
+            className="mt-3 w-full rounded-full"
+            src="/MadlyMart.png"
             alt="dora-logo"
           />
         </div>
-        <div className="flex flex-wrap items-center gap-2 relative">
+
+        {/* links for large device section*/}
+        <div className="hidden lg:block select-none">
+          <div className=" flex items-center font-semibold text-black gap-4">
+            <Link
+              onClick={() => setOffcanvas(false)}
+              to="/"
+              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/" ? "text-blue-600" : ""}`}
+            >
+              Orders
+            </Link>
+            <Link
+              onClick={() => setOffcanvas(false)}
+              to="/payments"
+              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/payments" ? "text-blue-600" : ""}`}
+
+            >
+              Payments
+            </Link>
+            <Link
+              onClick={() => setOffcanvas(false)}
+              to="/products"
+              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/products" ? "text-blue-600" : ""}`}
+               
+            >
+              Products
+            </Link>
+
+            <Link
+              onClick={() => setOffcanvas(false)}
+              to="/carousel"
+              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/carousel" ? "text-blue-600" : ""}`}
+              
+            >
+              Manage Offers
+            </Link>
+            <Link
+              onClick={() => setOffcanvas(false)}
+              to="/admin"
+              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/admin" ? "text-blue-600" : ""}`}
+              
+            >
+              Admin
+            </Link>
+          </div>
+        </div>
+
+        {/* navbar and profile icon section  */}
+        <div className="flex flex-wrap items-center gap-7 relative">
           <CgProfile
             onClick={handleIconClick}
             size={25}
             title="Profile"
-            className="text-white cursor-pointer rounded-full"
+            className="text-black cursor-pointer rounded-full"
+          />
+          <FaBars
+            size={25}
+            title="open menu"
+            className="text-black cursor-pointer"
+            onClick={() => setOffcanvas(true)}
           />
           {toggle && (
             <div
@@ -100,6 +152,12 @@ const Navbar = () => {
               >
                 Visitors
               </Link>
+              <Link
+                to="/admin"
+                className="text-white flex hover:bg-blue-500 lg:hidden cursor-pointer p-1 rounded capitalize"
+              >
+                Admin
+              </Link>
               <h5
                 className="text-white hover:bg-blue-500 rounded  cursor-pointer p-1"
                 onClick={removeToken}
@@ -114,11 +172,11 @@ const Navbar = () => {
       {/* offcanvas  */}
 
       <div
-        className={`fixed z-50 top-0 left-0  h-screen w-screen p-2 transform transition-transform duration-300 ${
+        className={`fixed z-50 top-0 left-0  h-screen w-screen lg:w-[35%] p-2 transform transition-transform duration-300 ${
           offcanvas ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="bg-gray-700 relative flex flex-col gap-4 text-white p-5 md:text-center h-full w-full rounded-lg">
+        <div className="bg-gray-700 relative flex flex-col gap-4 text-white p-5  h-full w-full rounded-lg">
           <Link
             onClick={() => setOffcanvas(false)}
             to="/"
@@ -126,55 +184,49 @@ const Navbar = () => {
           >
             Orders
           </Link>
-          {/* <Link
+          <Link
             onClick={() => setOffcanvas(false)}
-            to="/subscription"
+            to="/payments"
             className="text-[1.2rem]"
           >
-            Subscriptions
-          </Link> */}
+            Payments
+          </Link>
           <Link
             onClick={() => setOffcanvas(false)}
             to="/products"
             className="text-[1.2rem]"
           >
-            Update Products
+            Manage Products
           </Link>
           <Link
             onClick={() => setOffcanvas(false)}
             to="/uploadproducts"
             className="text-[1.2rem]"
           >
-            Add Products
+            Add New Products
           </Link>
           <Link
             onClick={() => setOffcanvas(false)}
             to="/carousel"
             className="text-[1.2rem]"
           >
-            Add Offer Images
+            Manage Offers
           </Link>
           <Link
             onClick={() => setOffcanvas(false)}
             to="/addcategory"
             className="text-[1.2rem]"
           >
-            Add New Category
+            Manage Category
           </Link>
           <Link
             onClick={() => setOffcanvas(false)}
             to="/discount"
             className="text-[1.2rem]"
           >
-            Add Discount
+            Manage Discounts
           </Link>
-          <Link
-            onClick={() => setOffcanvas(false)}
-            to="/admin"
-            className="text-[1.2rem]"
-          >
-            Admin
-          </Link>
+
           <a
             href="Dora A-Z Fresh Seller.apk"
             download="Dora A-Z Fresh Seller.apk"

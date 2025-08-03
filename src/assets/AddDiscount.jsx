@@ -1,12 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { dataContext } from "../App";
-import cloudinaryFunc from "./coudinary";
-import { MdClose } from "react-icons/md";
-import { CustomLoading, Loading, SmallLoading } from "./Loading";
+import { CustomLoading, Loading, SmallLoading } from "./components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
 
 const AddDiscount = () => {
   const { api, token } = useContext(dataContext);
@@ -57,7 +54,7 @@ const AddDiscount = () => {
   }, [btnToggle, updateId]);
 
   useEffect(() => {
-    if(updateCarouselData){
+    if (updateCarouselData) {
       if (Object.keys(updateCarouselData).length > 0) {
         setUpdateData((prevData) => ({
           ...prevData,
@@ -94,11 +91,15 @@ const AddDiscount = () => {
     event.preventDefault();
     setAddBtnSpinner(true);
     try {
-      const res = await axios.post(`${api}/api/offer/create-offer`, productData, {
-        headers: {
-          token: token,
-        },
-      });
+      const res = await axios.post(
+        `${api}/api/offer/create-offer`,
+        productData,
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
       if (res) {
         toast.success("Discounts added successfully");
         setAddBtnSpinner(false);

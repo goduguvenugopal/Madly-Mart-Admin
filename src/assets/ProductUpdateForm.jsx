@@ -1,25 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { MdClose } from "react-icons/md";
-import { SmallLoading } from "../assets/Loading";
+import { SmallLoading } from "./components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { dataContext } from "../App";
-import {
-  milkBasedItems,
-  vegetables,
-  meats,
-  vegFoodBasedNames,
-  nonVegFoods,
-  indianCoolDrinks,
-  indianPickles,
-  indianSpices,
-  indianSweets,
-  Maincategories,
-  bakeryItems,
-  snacksList,
-  indianGroceryItems,
-} from "./itemSubCategory";
+import { Maincategories } from "./data";
+import useCategoryOptions from "./components/useCategoryOptions";
 
 const ProductUpdateForm = () => {
   const { id, product } = useOutletContext();
@@ -46,40 +33,16 @@ const ProductUpdateForm = () => {
   };
   const [productData, setProductData] = useState(initialProductData);
   const [addBtnSpinner, setAddBtnSpinner] = useState(false);
+  const { subCategoryOptions } = useCategoryOptions({ productData });
   const [itemSubCategory, setItemSubCategory] = useState([]);
+
+  useEffect(() => {
+    setItemSubCategory(subCategoryOptions);
+  }, [subCategoryOptions]);
 
   useEffect(() => {
     setProductImages(product.itemImage);
   }, [product]);
-
-  // displaying sub category names with conditions
-  useEffect(() => {
-    if (productData.itemCategory === "milk") {
-      setItemSubCategory(milkBasedItems);
-    } else if (productData.itemCategory === "vegetables") {
-      setItemSubCategory(vegetables);
-    } else if (productData.itemCategory === "food") {
-      setItemSubCategory(vegFoodBasedNames);
-    } else if (productData.itemCategory === "meat") {
-      setItemSubCategory(meats);
-    } else if (productData.itemCategory === "non-veg") {
-      setItemSubCategory(nonVegFoods);
-    } else if (productData.itemCategory === "beverages") {
-      setItemSubCategory(indianCoolDrinks);
-    } else if (productData.itemCategory === "pickles") {
-      setItemSubCategory(indianPickles);
-    } else if (productData.itemCategory === "bakery") {
-      setItemSubCategory(bakeryItems);
-    } else if (productData.itemCategory === "sweets") {
-      setItemSubCategory(indianSweets);
-    } else if (productData.itemCategory === "spices") {
-      setItemSubCategory(indianSpices);
-    } else if (productData.itemCategory === "snacks") {
-      setItemSubCategory(snacksList);
-    } else if (productData.itemCategory === "grocery") {
-      setItemSubCategory(indianGroceryItems);
-    }
-  }, [productData.itemCategory]);
 
   // Add tags into the productTags array
   const addTagsInArray = () => {
@@ -114,7 +77,6 @@ const ProductUpdateForm = () => {
     }));
     setProductImages((prev) => [...prev, ...newArray]);
   };
- 
 
   // remove product images function
   const removeImageFunction = (itemImg) => {
@@ -125,7 +87,6 @@ const ProductUpdateForm = () => {
       .map((id) => id.public_id);
     setToKeepImages(filteredIds);
   };
- 
 
   // product weight add function
   const addWeightFunction = (event) => {
@@ -511,7 +472,7 @@ const ProductUpdateForm = () => {
                         Select the Sub Category
                       </option>
 
-                      {itemSubCategory.map((item, index) => (
+                      {itemSubCategory?.map((item, index) => (
                         <option key={index} value={item}>
                           {item}
                         </option>
@@ -555,6 +516,11 @@ const ProductUpdateForm = () => {
                       <option value="3">3</option>
                       <option value="4">4</option>
                       <option value="5">5</option>
+                      <option value="1">6</option>
+                      <option value="2">7</option>
+                      <option value="3">8</option>
+                      <option value="4">9</option>
+                      <option value="5">10</option>
                     </select>
                     <svg
                       className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
