@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { dataContext } from "../App";
+import { dataContext } from "../../App";
 import axios from "axios";
 
 const Visitors = () => {

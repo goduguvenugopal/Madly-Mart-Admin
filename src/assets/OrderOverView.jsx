@@ -12,6 +12,7 @@ const OrderOverView = () => {
   const [selectModal, setSelectModal] = useState(false);
   const [statusSpin, setStatusSpin] = useState(false);
   const [delayModal, setDelayModal] = useState(false);
+  const [trackingId , setTrackingId] = useState("")
   const [delayMessage, setDelayMessage] = useState(
     "We apologize as your order will be delayed for a few days due to some issues. Please wait for the delivery or cancel the order at your convenience. Thank you for your understanding."
   );
@@ -22,7 +23,7 @@ const OrderOverView = () => {
     setOrderDetails(result);
   }, [orderId, orders]);
 
-  console.log(orderDetails);
+ 
 
   // status update function
   const statusUpdateFunc = async (e) => {
@@ -258,8 +259,10 @@ const OrderOverView = () => {
           onClick={() => setSelectModal(false)}
           className="bg-gray-700  fixed top-0 left-0 p-3 bg-opacity-50 w-screen h-screen flex justify-center items-center"
         >
-          <div className="bg-white p-3 rounded w-[80%] lg:w-[30%] text-center">
-            <h5>Update Order Status</h5>
+          <div className="bg-white p-3 rounded w-[80%] lg:w-[30%] text-center"  onClick={(e) => e.stopPropagation()}>
+            <h5 className="text-[1.1rem] font-semibold ">
+              Update Order Status and Tracking Id
+            </h5>
             <select
               onClick={(e) => e.stopPropagation()}
               name="options"
@@ -269,7 +272,7 @@ const OrderOverView = () => {
               defaultValue=""
             >
               <option value="" disabled className="text-gray-400 ">
-                Filter
+                Update Status
               </option>
               <option value="pending">Pending</option>
               <option value="confirmed">Confirmed</option>
@@ -278,6 +281,18 @@ const OrderOverView = () => {
               <option value="delivered">Delivered</option>
               <option value="cancelled">Cancelled</option>
             </select>
+       
+
+            <h4 className="text-start font-semibold mb-2 mt-3">Tracking Id</h4>
+            <input
+              type="text"
+              placeholder="Tracking Id"
+              className="w-full border-2 outline-none p-[0.4rem] rounded border-blue-500"
+              name="trackingId"
+              id="trackingId"
+              />
+
+            <button  className="bg-blue-600 h-9 px-2 rounded mt-3 hover:bg-blue-800 text-white w-32">Update</button>
 
             {statusSpin && (
               <div className="flex items-center justify-center gap-3 mt-3">
@@ -285,6 +300,7 @@ const OrderOverView = () => {
                 Updating...
               </div>
             )}
+            
           </div>
         </div>
       )}

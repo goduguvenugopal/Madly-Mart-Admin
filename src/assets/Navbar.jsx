@@ -71,11 +71,13 @@ const Navbar = () => {
       >
         {/* logo section  */}
         <div className="w-[11rem] md:w-[15rem]">
+          <Link to="/">
           <img
             className="mt-3 w-full rounded-full"
             src="/MadlyMart.png"
             alt="dora-logo"
-          />
+            />
+            </Link>
         </div>
 
         {/* links for large device section*/}

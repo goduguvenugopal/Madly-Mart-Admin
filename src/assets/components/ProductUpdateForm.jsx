@@ -1,34 +1,36 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import { MdClose } from "react-icons/md";
-import { SmallLoading } from "./components/Loading";
+import { SmallLoading } from "../components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { dataContext } from "../App";
-import { Maincategories } from "./data";
-import useCategoryOptions from "./components/useCategoryOptions";
+import { dataContext } from "../../App";
+import { Maincategories } from "../data";
+import useCategoryOptions from "../components/useCategoryOptions";
 
-const UploadProducts = () => {
+const ProductUpdateForm = () => {
+  const { id, product } = useOutletContext();
   const { api, token } = useContext(dataContext);
+  const [productImages, setProductImages] = useState([]);
   const inputFocus = useRef();
   const [tags, setTags] = useState("");
-  const [productImages, setProductImages] = useState([]);
+  const [toKeepImages, setToKeepImages] = useState([]);
   const initialProductData = {
-    itemName: "",
-    itemDescription: "",
-    itemCost: "",
-    itemHalfKgCost: "",
-    itemKgCost: "",
+    itemName: product.itemName,
+    itemDescription: product.itemDescription,
+    itemCost: product.itemCost,
+    itemHalfKgCost: product.itemHalfKgCost,
+    itemKgCost: product.itemKgCost,
     itemQty: "1",
-    minOrderQty: "",
-    itemWeight: [],
-    itemStock: "",
-    itemCategory: "",
-    itemSubCategory: "",
-    offerCost: "",
-    offerMessage: "",
-    productTags: [],
+    minOrderQty: product.minOrderQty,
+    itemWeight: product.itemWeight,
+    itemStock: product.itemStock,
+    itemCategory: product.itemCategory,
+    itemSubCategory: product.itemSubCategory,
+    offerCost: product.offerCost,
+    offerMessage: product?.offerMessage,
+    productTags: product.productTags,
   };
-
   const [productData, setProductData] = useState(initialProductData);
   const [addBtnSpinner, setAddBtnSpinner] = useState(false);
   const { subCategoryOptions } = useCategoryOptions({ productData });
@@ -38,7 +40,9 @@ const UploadProducts = () => {
     setItemSubCategory(subCategoryOptions);
   }, [subCategoryOptions]);
 
-   
+  useEffect(() => {
+    setProductImages(product.itemImage);
+  }, [product]);
 
   // Add tags into the productTags array
   const addTagsInArray = () => {
@@ -64,7 +68,7 @@ const UploadProducts = () => {
     inputFocus.current.focus();
   };
 
-  // files handling
+  // sending file to cloudinary function
   const fileHandleFunc = (event) => {
     const filesArray = Array.from(event.target.files);
     const newArray = filesArray.map((file) => ({
@@ -78,6 +82,10 @@ const UploadProducts = () => {
   const removeImageFunction = (itemImg) => {
     const remainImages = productImages.filter((item) => item.image !== itemImg);
     setProductImages(remainImages);
+    const filteredIds = remainImages
+      .filter((item) => item.public_id)
+      .map((id) => id.public_id);
+    setToKeepImages(filteredIds);
   };
 
   // product weight add function
@@ -127,6 +135,7 @@ const UploadProducts = () => {
   formData.append("itemSubCategory", productData.itemSubCategory);
   formData.append("offerCost", productData.offerCost);
   formData.append("offerMessage", productData.offerMessage);
+  formData.append("toKeepImages", toKeepImages);
 
   // Append arrays (as individual fields)
   productData.itemWeight.forEach((weight, index) => {
@@ -140,46 +149,36 @@ const UploadProducts = () => {
   // append files as individual files
   productImages.forEach((img) => formData.append("images", img.file));
 
-  // form submit function
+  //product details form submit function
   const formSubmitFunc = async (event) => {
     event.preventDefault();
-    if (productData.productTags.length === 0) {
-      toast.error("Please add product tag names");
-    } else {
-      try {
-        setAddBtnSpinner(true);
-        const res = await axios.post(
-          `${api}/api/product/save-product`,
-          formData,
-          {
-            headers: {
-              token: token,
-            },
-          }
-        );
-        if (res) {
-          toast.success("Product added successfully");
-          setProductData(initialProductData);
-          setProductImages([]);
-          setAddBtnSpinner(false);
+    try {
+      setAddBtnSpinner(true);
+      const res = await axios.put(
+        `${api}/api/product/update-product-details/${id}`,
+        formData,
+        {
+          headers: {
+            token: token,
+          },
         }
-      } catch (error) {
-        console.error(error);
-        toast.error("Product not added try again");
+      );
+      if (res) {
+        toast.success("Product updated successfully");
+        setProductData(initialProductData);
         setAddBtnSpinner(false);
       }
+    } catch (error) {
+      console.error(error);
+      toast.error("Product not updated try again");
+      setAddBtnSpinner(false);
     }
   };
 
   return (
     <>
       <ToastContainer position="top-center" theme="dark" />
-      <div className="mt-[6.1rem] p-3 lg:p-5">
-        <h5 className="text-[1.4rem] font-semibold text-center">
-          Add products
-        </h5>
-        <hr className="border-1 border-gray-600 my-1" />
-
+      <div className="">
         <form
           className="lg:flex lg:justify-between lg:gap-3 pt-5 "
           onSubmit={formSubmitFunc}
@@ -189,7 +188,7 @@ const UploadProducts = () => {
               htmlFor="cover-photo"
               className="block text-sm/6 font-medium text-gray-900"
             >
-              Product photos <span className="text-red-500">*</span>
+              Product photos
             </label>
             <div className="mt-2 flex justify-center rounded-lg border-2 border-dashed border-gray-900/25 px-6 py-10">
               <div className="text-center">
@@ -217,9 +216,8 @@ const UploadProducts = () => {
                       id="itemImage"
                       name="itemImage"
                       type="file"
-                      required
-                      accept="image/jpeg, image/png, image/jpg, image/webp"
                       multiple
+                      accept="image/jpeg, image/png, image/jpg, image/webp"
                       onChange={fileHandleFunc}
                       className="sr-only"
                     />
@@ -254,7 +252,7 @@ const UploadProducts = () => {
                   htmlFor="itemName"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Name <span className="text-red-500">*</span>
+                  Name
                 </label>
                 <div className="mt-2">
                   <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1  outline-gray-500 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -262,7 +260,6 @@ const UploadProducts = () => {
                       type="text"
                       name="itemName"
                       id="itemName"
-                      required
                       value={productData.itemName}
                       onChange={formHandleFunc}
                       className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
@@ -277,7 +274,7 @@ const UploadProducts = () => {
                   htmlFor="itemCost"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Cost <span className="text-red-500">*</span>
+                  Cost
                 </label>
                 <div className="mt-2">
                   <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1  outline-gray-500 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -286,7 +283,6 @@ const UploadProducts = () => {
                       name="itemCost"
                       onChange={formHandleFunc}
                       value={productData.itemCost}
-                      required
                       id="itemCost"
                       className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
                       placeholder="Enter Product Cost"
@@ -327,7 +323,7 @@ const UploadProducts = () => {
                     value={productData.offerMessage}
                     id="offerMessage"
                     rows={3}
-                    placeholder="Example :- Reduced Prices 50% discount on each product"
+                    placeholder="Example :- Reduced Prices – ₹70 per Litre & ₹35 per Half Litre!"
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                   />
                 </div>
@@ -380,7 +376,7 @@ const UploadProducts = () => {
                     htmlFor="itemStock"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Stock <span className="text-red-500">*</span>
+                    Stock
                   </label>
                   <div className="mt-2">
                     <input
@@ -390,7 +386,6 @@ const UploadProducts = () => {
                       value={productData.itemStock}
                       onChange={formHandleFunc}
                       placeholder="Enter stock quantity"
-                      required
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                     />
                   </div>
@@ -421,14 +416,13 @@ const UploadProducts = () => {
                     htmlFor="itemCategory"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Category <span className="text-red-500">*</span>
+                    Category
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select
                       id="itemCategory"
                       name="itemCategory"
                       autoComplete="itemCategory"
-                      required
                       value={productData.itemCategory}
                       onChange={formHandleFunc}
                       className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -463,14 +457,13 @@ const UploadProducts = () => {
                     htmlFor="itemSubCategory"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Sub Category <span className="text-red-500">*</span>
+                    Sub Category
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select
                       id="itemSubCategory"
                       name="itemSubCategory"
                       autoComplete="itemSubCategory"
-                      required
                       value={productData.itemSubCategory}
                       onChange={formHandleFunc}
                       className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -523,6 +516,11 @@ const UploadProducts = () => {
                       <option value="3">3</option>
                       <option value="4">4</option>
                       <option value="5">5</option>
+                      <option value="1">6</option>
+                      <option value="2">7</option>
+                      <option value="3">8</option>
+                      <option value="4">9</option>
+                      <option value="5">10</option>
                     </select>
                     <svg
                       className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
@@ -597,7 +595,7 @@ const UploadProducts = () => {
                     htmlFor="productTags"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Product Tags <span className="text-red-500">*</span>
+                    Product Tags
                   </label>
                   <div className="mt-2 relative">
                     <input
@@ -643,14 +641,14 @@ const UploadProducts = () => {
                     type="button"
                     className="flex cursor-not-allowed items-center justify-center gap-3 rounded-md bg-blue-600 px-3 py-2 w-full md:w-fit lg:w-full text-sm font-semibold text-white shadow-sm "
                   >
-                    <SmallLoading /> Adding products...
+                    <SmallLoading /> Updating product...
                   </button>
                 ) : (
                   <button
                     type="submit"
                     className="rounded-md bg-indigo-600 px-3 py-2 w-full md:w-fit lg:w-full text-md font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
-                    Add Products
+                    Update Product
                   </button>
                 )}
               </div>
@@ -662,4 +660,4 @@ const UploadProducts = () => {
   );
 };
 
-export default UploadProducts;
+export default ProductUpdateForm;

@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { dataContext } from "../App";
+import { dataContext } from "../../App";
 import { MdClose } from "react-icons/md";
-import { CustomLoading, SmallLoading } from "./components/Loading";
+import { CustomLoading, SmallLoading } from "../components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { Maincategories } from "./data";
+import { Maincategories } from "../data";
+ 
 
 const AddCategory = () => {
   const { api, token } = useContext(dataContext);

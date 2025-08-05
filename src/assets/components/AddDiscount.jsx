@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { dataContext } from "../App";
-import { CustomLoading, Loading, SmallLoading } from "./components/Loading";
+import { dataContext } from "../../App";
+import { CustomLoading, Loading, SmallLoading } from "../components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEdit } from "react-icons/fa";

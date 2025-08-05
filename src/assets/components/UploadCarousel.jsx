@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { dataContext } from "../App";
+import { dataContext } from "../../App";
 import { MdClose } from "react-icons/md";
-import { CustomLoading, Loading, SmallLoading } from "./components/Loading";
+import { CustomLoading, Loading, SmallLoading } from "../components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEdit } from "react-icons/fa";

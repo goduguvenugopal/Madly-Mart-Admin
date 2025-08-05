@@ -5,20 +5,20 @@ import Navbar from "./assets/Navbar.jsx";
 import Login from "./assets/Login.jsx";
 import { Routes, Route } from "react-router-dom";
 import Orders from "./assets/Orders.jsx";
-import UploadProducts from "./assets/UploadProducts.jsx";
-import Admin from "./assets/Admin.jsx";
+import UploadProducts from "./assets/components/UploadProducts.jsx";
+import Admin from "./assets/components/Admin.jsx";
 import Products from "./assets/Products.jsx";
-import AddCategory from "./assets/AddCategory.jsx";
-import UploadCarousel from "./assets/UploadCarousel.jsx";
+import AddCategory from "./assets/components/AddCategory.jsx";
+import UploadCarousel from "./assets/components/UploadCarousel.jsx";
 import axios from "axios";
 import ProductOverView from "./assets/ProductOverView.jsx";
-import ProductUpdateForm from "./assets/ProductUpdateForm.jsx";
+import ProductUpdateForm from "./assets/components/ProductUpdateForm.jsx";
 import PageNotFound from "./assets/components/PageNotFound.jsx";
 import OrderOverView from "./assets/OrderOverView.jsx";
-import AddDiscount from "./assets/AddDiscount.jsx";
-import Visitors from "./assets/Visitors.jsx";
+import AddDiscount from "./assets/components/AddDiscount.jsx";
 import Payments from "./assets/components/Payments.jsx";
 import FailedPayments from "./assets/components/FailedPayments.jsx";
+import Visitors from "./assets/components/Visitors.jsx";
 
 export const dataContext = createContext();
 
@@ -117,7 +117,7 @@ function App() {
               >
                 <Route path="updateproduct" element={<ProductUpdateForm />} />
               </Route>
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin" element={<Admin/>} />
               <Route path="/uploadproducts" element={<UploadProducts />} />
               <Route path="/addcategory" element={<AddCategory />} />
               <Route path="/carousel" element={<UploadCarousel />} />

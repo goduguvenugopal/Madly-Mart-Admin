@@ -14,6 +14,7 @@ const Orders = () => {
     return today.toISOString().split("T")[0];
   });
   const dateRef = useRef(null);
+  const [filterOption, setFilterOption] = useState("");
 
   // rendering orders according to the date
   useEffect(() => {
@@ -37,17 +38,26 @@ const Orders = () => {
   // select orders according to the order status filter function
   const inputSelectHandleFunc = (e) => {
     const inputText = e.target.value;
-    if (inputText === "all") {
+    setFilterOption(inputText);
+    sessionStorage.setItem("filter", JSON.stringify(inputText));
+  };
+
+  useEffect(() => {
+    const isFilter = sessionStorage.getItem("filter");
+    if (isFilter) {
+      setFilterOption(JSON.parse(isFilter));
+    }
+    if (filterOption === "all") {
       setTodayOrders(todayOrders1);
-    } else if (inputText === "alldays") {
+    } else if (filterOption === "alldays") {
       setTodayOrders(orders);
     } else {
       const remainOrders = todayOrders1.filter((item) =>
-        item.orderStatus.toLowerCase().includes(inputText.toLowerCase())
+        item.orderStatus.toLowerCase().includes(filterOption.toLowerCase())
       );
       setTodayOrders(remainOrders);
     }
-  };
+  }, [filterOption]);
 
   // search orders with order id function
   const searchFunction = (e) => {
