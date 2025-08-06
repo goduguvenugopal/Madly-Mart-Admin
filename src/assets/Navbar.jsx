@@ -171,7 +171,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* offcanvas  */}
+      {/* offcanvas for small and large devices */}
 
       <div
         className={`fixed z-50 top-0 left-0  h-screen w-screen lg:w-[35%] p-2 transform transition-transform duration-300 ${
@@ -182,21 +182,21 @@ const Navbar = () => {
           <Link
             onClick={() => setOffcanvas(false)}
             to="/"
-            className="text-[1.2rem]"
+            className="text-[1.2rem] lg:hidden"
           >
             Orders
           </Link>
           <Link
             onClick={() => setOffcanvas(false)}
             to="/payments"
-            className="text-[1.2rem]"
+            className="text-[1.2rem] lg:hidden"
           >
             Payments
           </Link>
           <Link
             onClick={() => setOffcanvas(false)}
             to="/products"
-            className="text-[1.2rem]"
+            className="text-[1.2rem] lg:hidden"
           >
             Manage Products
           </Link>
@@ -210,7 +210,7 @@ const Navbar = () => {
           <Link
             onClick={() => setOffcanvas(false)}
             to="/carousel"
-            className="text-[1.2rem]"
+            className="text-[1.2rem] lg:hidden"
           >
             Manage Offers
           </Link>

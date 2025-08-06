@@ -31,6 +31,8 @@ function App() {
   const [orders, setOrders] = useState([]);
   const [orderSpin, setOrderSpin] = useState(false);
   const [reload, setReload] = useState(false);
+  const [payments, setPayments] = useState([]);
+  const [paymentSpin, setPaymentSpin] = useState(false);
 
   useEffect(() => {
     // retrieving token from localstorage
@@ -43,7 +45,6 @@ function App() {
   useEffect(() => {
     // fetching user details
     const fetchUser = async () => {
-   
       try {
         const response = await axios.get(`${api}/api/user/get-single-user`, {
           headers: {
@@ -55,6 +56,8 @@ function App() {
           setLoading(false);
         }
       } catch (error) {
+        console.error(error);
+      } finally {
         setLoading(false);
       }
     };
@@ -64,7 +67,7 @@ function App() {
     }
   }, [token]);
 
-  // fetching orders
+  // fetch orders
   useEffect(() => {
     const getOrdersFunction = async () => {
       try {
@@ -79,9 +82,26 @@ function App() {
         setOrderSpin(false);
       }
     };
+
+    // fecth successfull payments
+    const getSuccessfullPayments = async () => {
+      try {
+        setPaymentSpin(true);
+        const res = await axios.get(`${api}/api/payment/get-all-payments`);
+        if (res) {
+      
+          setPayments(res.data.payments);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setPaymentSpin(false);
+      }
+    };
     // if role is Admin orders function will be called
     if (user.role === "admin") {
       getOrdersFunction();
+      getSuccessfullPayments();
     }
   }, [user, reload]);
 
@@ -103,6 +123,8 @@ function App() {
           reload,
           setReload,
           analytics_api,
+          payments,
+          paymentSpin,
         }}
       >
         {user.role === "admin" && token && <Navbar />}
@@ -117,12 +139,12 @@ function App() {
               >
                 <Route path="updateproduct" element={<ProductUpdateForm />} />
               </Route>
-              <Route path="/admin" element={<Admin/>} />
+              <Route path="/admin" element={<Admin />} />
               <Route path="/uploadproducts" element={<UploadProducts />} />
               <Route path="/addcategory" element={<AddCategory />} />
               <Route path="/carousel" element={<UploadCarousel />} />
               <Route path="/discount" element={<AddDiscount />} />
-              <Route path="/payments" element={<Payments/>} />
+              <Route path="/payments" element={<Payments />} />
               <Route
                 path="/order_over_view/:orderId"
                 element={<OrderOverView />}

@@ -39,23 +39,27 @@ const Orders = () => {
   const inputSelectHandleFunc = (e) => {
     const inputText = e.target.value;
     setFilterOption(inputText);
+   
+    
     sessionStorage.setItem("filter", JSON.stringify(inputText));
   };
 
   useEffect(() => {
-    const isFilter = sessionStorage.getItem("filter");
-    if (isFilter) {
-      setFilterOption(JSON.parse(isFilter));
-    }
-    if (filterOption === "all") {
-      setTodayOrders(todayOrders1);
-    } else if (filterOption === "alldays") {
-      setTodayOrders(orders);
-    } else {
-      const remainOrders = todayOrders1.filter((item) =>
-        item.orderStatus.toLowerCase().includes(filterOption.toLowerCase())
-      );
-      setTodayOrders(remainOrders);
+    const storedFilter = sessionStorage.getItem("filter");
+    if (storedFilter) {
+      const isFilter = JSON.parse(storedFilter);
+      console.log(isFilter);
+      
+      if (isFilter === "all") {
+        setTodayOrders(todayOrders1);
+      } else if (isFilter === "alldays") {
+        setTodayOrders(orders);
+      } else {
+        const remainOrders = todayOrders1.filter((item) =>
+          item.orderStatus.toLowerCase().includes(isFilter.toLowerCase())
+        );
+        setTodayOrders(remainOrders);
+      }
     }
   }, [filterOption]);
 
@@ -71,7 +75,7 @@ const Orders = () => {
   return (
     <div className="mt-[6.1rem] p-3 lg:p-5">
       <h5 className="text-center text-2xl font-semibold mb-3 ">
-        All Orders : {todayOrders.length}
+        All Orders : {todayOrders?.length}
       </h5>
       <hr className="border border-gray-400 mb-5" />
       <div className="mb-2 lg:w-full ">
@@ -137,13 +141,13 @@ const Orders = () => {
           <CustomLoading customHeight="h-[55vh]" />
         ) : (
           <>
-            {todayOrders.length > 0 ? (
+            {todayOrders?.length > 0 ? (
               <div className="lg:flex lg:flex-wrap lg:justify-center lg:gap-4 ">
-                {todayOrders.map((item) => (
+                {todayOrders?.map((item) => (
                   <Link
                     to={`/order_over_view/${item._id}`}
                     key={item._id}
-                    className="block lg:w-[35%] border bg-orange-300 hover:shadow-gray-400 relative  mb-3 shadow-md rounded shadow-gray-300 p-3"
+                    className="block lg:w-[35%] border bg-gray-200 hover:shadow-gray-400 relative  mb-3 shadow-md rounded shadow-gray-300 p-3"
                   >
                     <h6 className="text-white rounded p-1 px-2 bg-blue-500 w-fit">
                       Order From :{" "}
@@ -217,7 +221,7 @@ const Orders = () => {
                     </h6>
                     <h6 className="text-gray-600  mt-1">
                       Order Id :{" "}
-                      <span className="font-semibold capitalize underline text-black">
+                      <span className="font-semibold   underline text-black">
                         {item._id}
                       </span>
                     </h6>

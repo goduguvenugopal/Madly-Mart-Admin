@@ -12,7 +12,8 @@ const OrderOverView = () => {
   const [selectModal, setSelectModal] = useState(false);
   const [statusSpin, setStatusSpin] = useState(false);
   const [delayModal, setDelayModal] = useState(false);
-  const [trackingId , setTrackingId] = useState("")
+  const [trackingId, setTrackingId] = useState("");
+  const [orderStatus , setOrderStatus] = useState("")
   const [delayMessage, setDelayMessage] = useState(
     "We apologize as your order will be delayed for a few days due to some issues. Please wait for the delivery or cancel the order at your convenience. Thank you for your understanding."
   );
@@ -23,17 +24,14 @@ const OrderOverView = () => {
     setOrderDetails(result);
   }, [orderId, orders]);
 
- 
-
   // status update function
-  const statusUpdateFunc = async (e) => {
-    const statusInput = e.target.value;
+  const statusUpdateFunc = async () => {
     try {
       setReload(true);
       setStatusSpin(true);
       const res = await axios.put(
         `${api}/api/order/update-order-status/${orderId}`,
-        { orderStatus: statusInput }
+        { orderStatus, order_tracking_id: trackingId }
       );
       if (res) {
         setStatusSpin(false);
@@ -116,10 +114,15 @@ const OrderOverView = () => {
 
             <div className="flex flex-col gap-2">
               <hr className="border border-orange-200 my-3" />
+               <p className="text-blue-800  font-semibold">
+                <span className="text-black font-bold">Order Tracking Id:</span>{" "}
+                {orderDetails?.order_tracking_id}
+              </p>
               <p className="text-orange-800 font-semibold">
                 <span className="text-black font-bold">Order Id:</span>{" "}
                 {orderDetails?._id}
               </p>
+              
               <h6 className="">
                 <span className="font-bold">Delay Message:</span>{" "}
                 {orderDetails?.delayMessage}
@@ -172,7 +175,26 @@ const OrderOverView = () => {
                 </span>
               </p>
               <hr className="border border-orange-200 my-3" />
+              {/* payment details section  */}
 
+              <h6 className="">
+                <span className=" font-bold">
+                  Razorpay Signature:
+                </span>{" "}
+                {orderDetails?.razorpay_signature}
+              </h6>
+              <h6 className="">
+                <span className="font-bold  ">Razorpay Payment Id :</span>{" "}
+                {orderDetails?.razorpay_payment_id}
+              </h6>
+              <h6 className="">
+                <span className="font-bold  ">Razorpay Order Id :</span>{" "}
+                {orderDetails?.razorpay_order_id}
+              </h6>
+              <h6 className="text-green-500 font-semibold">
+                <span className="font-bold  ">Payment Status :</span>{" "}
+                {orderDetails?.paymentStatus}
+              </h6>
               <p>
                 <strong className="text-xl">Total Amount:</strong>{" "}
                 <span className="text-green-700 font-bold text-[1.2rem]">
@@ -259,7 +281,10 @@ const OrderOverView = () => {
           onClick={() => setSelectModal(false)}
           className="bg-gray-700  fixed top-0 left-0 p-3 bg-opacity-50 w-screen h-screen flex justify-center items-center"
         >
-          <div className="bg-white p-3 rounded w-[80%] lg:w-[30%] text-center"  onClick={(e) => e.stopPropagation()}>
+          <div
+            className="bg-white p-3 rounded w-[80%] lg:w-[30%] text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h5 className="text-[1.1rem] font-semibold ">
               Update Order Status and Tracking Id
             </h5>
@@ -267,7 +292,7 @@ const OrderOverView = () => {
               onClick={(e) => e.stopPropagation()}
               name="options"
               id="options"
-              onChange={statusUpdateFunc}
+              onChange={(e)=> setOrderStatus(e.target.value)}
               className="border-2 mt-3 outline-none w-full border-blue-500 rounded p-1 h-10 bg-white"
               defaultValue=""
             >
@@ -281,18 +306,21 @@ const OrderOverView = () => {
               <option value="delivered">Delivered</option>
               <option value="cancelled">Cancelled</option>
             </select>
-       
 
             <h4 className="text-start font-semibold mb-2 mt-3">Tracking Id</h4>
             <input
               type="text"
               placeholder="Tracking Id"
+              value={trackingId.trim()}
+              onChange={(e)=> setTrackingId(e.target.value)}
               className="w-full border-2 outline-none p-[0.4rem] rounded border-blue-500"
               name="trackingId"
               id="trackingId"
-              />
+            />
 
-            <button  className="bg-blue-600 h-9 px-2 rounded mt-3 hover:bg-blue-800 text-white w-32">Update</button>
+            <button onClick={statusUpdateFunc} className="bg-blue-600 h-9 px-2 rounded mt-3 hover:bg-blue-800 text-white w-32">
+              Update
+            </button>
 
             {statusSpin && (
               <div className="flex items-center justify-center gap-3 mt-3">
@@ -300,7 +328,6 @@ const OrderOverView = () => {
                 Updating...
               </div>
             )}
-            
           </div>
         </div>
       )}
