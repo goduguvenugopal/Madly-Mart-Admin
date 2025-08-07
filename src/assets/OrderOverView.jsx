@@ -13,7 +13,7 @@ const OrderOverView = () => {
   const [statusSpin, setStatusSpin] = useState(false);
   const [delayModal, setDelayModal] = useState(false);
   const [trackingId, setTrackingId] = useState("");
-  const [orderStatus , setOrderStatus] = useState("")
+  const [orderStatus, setOrderStatus] = useState("");
   const [delayMessage, setDelayMessage] = useState(
     "We apologize as your order will be delayed for a few days due to some issues. Please wait for the delivery or cancel the order at your convenience. Thank you for your understanding."
   );
@@ -21,7 +21,8 @@ const OrderOverView = () => {
   useEffect(() => {
     // fetching order details
     const result = orders.find((item) => item._id === orderId);
-    setOrderDetails(result);
+    setOrderDetails(result)
+    setTrackingId(result?.order_tracking_id)
   }, [orderId, orders]);
 
   // status update function
@@ -36,6 +37,7 @@ const OrderOverView = () => {
       if (res) {
         setStatusSpin(false);
         setSelectModal(false);
+        setOrderStatus("")
         setReload(false);
         toast.success("Order Status updated successfully");
       }
@@ -111,10 +113,12 @@ const OrderOverView = () => {
                 </div>
               ))}
             </div>
-
+            {/* order updates section  */}
             <div className="flex flex-col gap-2">
-              <hr className="border border-orange-200 my-3" />
-               <p className="text-blue-800  font-semibold">
+              <hr className="border border-orange-200 mt-3" />
+              <h3 className="text-2xl font-semibold">Order Updates</h3>
+              <hr className="border border-orange-200 mb-2" />
+              <p className="text-blue-800  font-semibold">
                 <span className="text-black font-bold">Order Tracking Id:</span>{" "}
                 {orderDetails?.order_tracking_id}
               </p>
@@ -122,7 +126,7 @@ const OrderOverView = () => {
                 <span className="text-black font-bold">Order Id:</span>{" "}
                 {orderDetails?._id}
               </p>
-              
+
               <h6 className="">
                 <span className="font-bold">Delay Message:</span>{" "}
                 {orderDetails?.delayMessage}
@@ -174,13 +178,12 @@ const OrderOverView = () => {
                   {orderDetails?.orderStatusDate}
                 </span>
               </p>
-              <hr className="border border-orange-200 my-3" />
+              <hr className="border border-orange-200 mt-2" />
               {/* payment details section  */}
-
+              <h3 className="text-2xl font-semibold">Payment Details</h3>
+              <hr className="border border-orange-200 mb-2" />
               <h6 className="">
-                <span className=" font-bold">
-                  Razorpay Signature:
-                </span>{" "}
+                <span className=" font-bold">Razorpay Signature:</span>{" "}
                 {orderDetails?.razorpay_signature}
               </h6>
               <h6 className="">
@@ -191,9 +194,17 @@ const OrderOverView = () => {
                 <span className="font-bold  ">Razorpay Order Id :</span>{" "}
                 {orderDetails?.razorpay_order_id}
               </h6>
-              <h6 className="text-green-500 font-semibold">
-                <span className="font-bold  ">Payment Status :</span>{" "}
-                {orderDetails?.paymentStatus}
+              <h6 className="font-bold text-black flex items-center gap-2 ">
+                Payment Status :
+                <span
+                  className={`font-semibold block min-w-24 text-center capitalize ${
+                    orderDetails?.paymentStatus === "paid"
+                      ? "text-white bg-green-600 px-3 py-1 rounded "
+                      : "text-white bg-yellow-600 px-3 py-1 rounded"
+                  }`}
+                >
+                  {orderDetails?.paymentStatus}
+                </span>{" "}
               </h6>
               <p>
                 <strong className="text-xl">Total Amount:</strong>{" "}
@@ -212,6 +223,7 @@ const OrderOverView = () => {
                 >
                   Send Delay Message
                 </button>
+
                 <button
                   className="bg-blue-800 hover:bg-blue-600 text-white rounded h-[2.3rem]  px-2"
                   onClick={() => setSelectModal(true)}
@@ -244,19 +256,10 @@ const OrderOverView = () => {
                   <strong>Quantity:</strong> {product.itemQty}
                 </p>
                 <p>
-                  <strong>Weight:</strong> {product.products[0].itemWeight}ml
+                  <strong> Size :</strong> {product.products[0].itemWeight}
                 </p>
-                <h6 className="font-bold">
-                  Order Type:{" "}
-                  <span className="bg-green-700 py-1 w-fit px-2 font-semibold text-white rounded">
-                    {product.orderType.replace("buyonce", "Buy Once")}
-                  </span>{" "}
-                </h6>
-                {product.orderType === "subscription" && (
-                  <p>
-                    <strong>Days:</strong> {product?.products[0]?.days}
-                  </p>
-                )}
+               
+              
 
                 <div className="mt-4">
                   <h5 className="font-medium">Product Image:</h5>
@@ -292,7 +295,7 @@ const OrderOverView = () => {
               onClick={(e) => e.stopPropagation()}
               name="options"
               id="options"
-              onChange={(e)=> setOrderStatus(e.target.value)}
+              onChange={(e) => setOrderStatus(e.target.value)}
               className="border-2 mt-3 outline-none w-full border-blue-500 rounded p-1 h-10 bg-white"
               defaultValue=""
             >
@@ -311,17 +314,23 @@ const OrderOverView = () => {
             <input
               type="text"
               placeholder="Tracking Id"
-              value={trackingId.trim()}
-              onChange={(e)=> setTrackingId(e.target.value)}
+              value={trackingId}
+              onChange={(e) => setTrackingId(e.target.value)}
               className="w-full border-2 outline-none p-[0.4rem] rounded border-blue-500"
               name="trackingId"
               id="trackingId"
             />
+            {/* submit button  */}
+            {trackingId || orderStatus ? (
+              <button
+                onClick={statusUpdateFunc}
+                className="bg-blue-600 h-9 px-2 rounded mt-3 hover:bg-blue-800 text-white w-32"
+              >
+                Update
+              </button>
+            ) : null}
 
-            <button onClick={statusUpdateFunc} className="bg-blue-600 h-9 px-2 rounded mt-3 hover:bg-blue-800 text-white w-32">
-              Update
-            </button>
-
+            {/* loader  */}
             {statusSpin && (
               <div className="flex items-center justify-center gap-3 mt-3">
                 <SmallLoading />
