@@ -23,6 +23,8 @@ const OrderOverView = () => {
     const result = orders.find((item) => item._id === orderId);
     setOrderDetails(result)
     setTrackingId(result?.order_tracking_id)
+    console.log(result);
+    
   }, [orderId, orders]);
 
   // status update function
@@ -265,7 +267,7 @@ const OrderOverView = () => {
                   <h5 className="font-medium">Product Image:</h5>
                   <div className="flex gap-3 flex-wrap mt-2">
                     <img
-                      src={product?.products[0]?.itemImage[0]}
+                      src={product?.products[0]?.itemImage[0]?.image}
                       alt="Product Image"
                       className="w-32 h-32 object-cover rounded-md border"
                     />

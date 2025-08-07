@@ -39,6 +39,8 @@ function App() {
     const token = localStorage.getItem("token");
     if (token) {
       setToken(JSON.parse(token));
+    }else{
+      setLoading(false)
     }
   }, []);
 

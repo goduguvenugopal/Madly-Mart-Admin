@@ -86,8 +86,8 @@ const Login = () => {
             <div className="flex flex-col justify-center w-full p-12">
               <div className="sm:mx-auto  sm:w-full sm:max-w-sm">
                 <img
-                  className="w-28 rounded-full mx-auto"
-                  src="dora-logo.jpeg"
+                  className="w-40 rounded-full mx-auto"
+                  src="/MadlyMart.png"
                   alt="Your Company"
                 />
                 <h2 className="mt-7 text-center text-2xl/9 font-semibold tracking-tight text-gray-900">
@@ -156,7 +156,7 @@ const Login = () => {
                     email or
                   </span>
                   <a
-                    href="mailto:dora.a.to.z.fresh@gmail.com"
+                    href="mailto:madlymart@gmail.com"
                     className="font-semibold text-indigo-600 hover:text-indigo-500"
                   >
                     contact us
@@ -171,8 +171,8 @@ const Login = () => {
             <div className="flex flex-col justify-center w-full p-12">
               <div className="sm:mx-auto  sm:w-full sm:max-w-sm">
                 <img
-                  className="w-28 rounded-full mx-auto"
-                  src="dora-logo.jpeg"
+                  className="w-40 rounded-full mx-auto"
+                  src="/MadlyMart.png"
                   alt="Your Company"
                 />
                 <h2 className="mt-7 text-center text-2xl/9 font-semibold tracking-tight text-gray-900">
@@ -248,7 +248,7 @@ const Login = () => {
                     email or
                   </span>
                   <a
-                    href="mailto:dora.a.to.z.fresh@gmail.com"
+                    href="mailto:madlymart@gmail.com"
                     className="font-semibold text-indigo-600 hover:text-indigo-500"
                   >
                     contact us
