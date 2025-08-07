@@ -323,7 +323,7 @@ const ProductUpdateForm = () => {
                     value={productData.offerMessage}
                     id="offerMessage"
                     rows={3}
-                    placeholder="Example :- Reduced Prices – ₹70 per Litre & ₹35 per Half Litre!"
+                    placeholder="Example :- Reduced Prices – ₹70 off on each product!"
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                   />
                 </div>
@@ -337,14 +337,14 @@ const ProductUpdateForm = () => {
                     htmlFor="itemHalfKgCost"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Half Kg Cost
+                    Medium Size Cost
                   </label>
                   <div className="mt-2">
                     <input
                       type="text"
                       name="itemHalfKgCost"
                       value={productData.itemHalfKgCost}
-                      placeholder="Enter product half kg cost "
+                      placeholder="Enter product medium cost "
                       onChange={formHandleFunc}
                       id="itemHalfKgCost"
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -356,13 +356,13 @@ const ProductUpdateForm = () => {
                     htmlFor="itemKgCost"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Kg Cost
+                    Large Size Cost
                   </label>
                   <div className="mt-2">
                     <input
                       type="text"
                       name="itemKgCost"
-                      placeholder="Enter product kg cost"
+                      placeholder="Enter product large cost"
                       onChange={formHandleFunc}
                       value={productData.itemKgCost}
                       id="itemKgCost"
@@ -543,7 +543,7 @@ const ProductUpdateForm = () => {
                     htmlFor="itemWeight"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Product Weight
+                    Product Size
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select
@@ -554,11 +554,11 @@ const ProductUpdateForm = () => {
                       className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                     >
                       <option disabled value="">
-                        Select the product Weight
+                        Select the product Size
                       </option>
-                      <option value="250">250 grams</option>
-                      <option value="500">500 grams</option>
-                      <option value="1000">1 kg</option>
+                      <option value="small">Small</option>
+                      <option value="medium">Medium</option>
+                      <option value="large">Large</option>
                     </select>
                     <svg
                       className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"

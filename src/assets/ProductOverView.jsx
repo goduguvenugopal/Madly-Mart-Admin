@@ -169,13 +169,13 @@ const ProductOverView = () => {
                 <hr className="border  border-gray-200 mb-2 mt-1" />
 
                 <h5 className="text-blue-800 mt-2 text-[1.1rem]">
-                  Item Half Kg Cost :{" "}
+                  Medium size cost :{" "}
                   <span className="text-black font-semibold">
                     ₹{product.itemHalfKgCost}
                   </span>
                 </h5>
                 <h5 className="text-blue-800 mt-2 text-[1.1rem]">
-                  Item Kg Cost :{" "}
+                Large size cost :{" "}
                   <span className="text-black font-semibold">
                     ₹{product.itemKgCost}
                   </span>
@@ -218,14 +218,14 @@ const ProductOverView = () => {
                 </h5>
                 <div className="flex items-start flex-wrap gap-1 mt-2">
                   <h5 className="text-blue-800 text-nowrap text-[1.1rem] ">
-                    Item Weight Available :
+                    Available sizes:
                   </h5>
                   {product?.itemWeight?.map((item) => (
                     <h5
                       key={item}
                       className="text-white px-2 rounded bg-indigo-600   font-semibold  mr-2"
                     >
-                      {item} grams{" "}
+                      {item}  
                     </h5>
                   ))}
                 </div>
