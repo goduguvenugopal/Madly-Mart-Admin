@@ -167,19 +167,6 @@ const ProductOverView = () => {
                 </h5>
 
                 <hr className="border  border-gray-200 mb-2 mt-1" />
-
-                <h5 className="text-blue-800 mt-2 text-[1.1rem]">
-                  Medium size cost :{" "}
-                  <span className="text-black font-semibold">
-                    ₹{product.itemHalfKgCost}
-                  </span>
-                </h5>
-                <h5 className="text-blue-800 mt-2 text-[1.1rem]">
-                Large size cost :{" "}
-                  <span className="text-black font-semibold">
-                    ₹{product.itemKgCost}
-                  </span>
-                </h5>
                 <h5 className="text-blue-800 mt-2 text-[1.1rem]">
                   Item Offer Cost :{" "}
                   <span className="text-black font-semibold">
@@ -192,12 +179,7 @@ const ProductOverView = () => {
                     {product.minOrderQty}
                   </span>
                 </h5>
-                <h5 className="text-blue-800 mt-2 text-[1.1rem]">
-                  Item description :{" "}
-                  <span className="text-black font-semibold">
-                    {product.itemDescription}
-                  </span>
-                </h5>
+
                 <h5 className="text-blue-800 mt-2 text-[1.1rem]">
                   Item Stock :{" "}
                   <span className="text-black font-semibold">
@@ -216,19 +198,72 @@ const ProductOverView = () => {
                     {product.itemSubCategory}
                   </span>
                 </h5>
-                <div className="flex items-start flex-wrap gap-1 mt-2">
-                  <h5 className="text-blue-800 text-nowrap text-[1.1rem] ">
-                    Available sizes:
-                  </h5>
-                  {product?.itemWeight?.map((item) => (
-                    <h5
+                <details className="text-blue-800 cursor-pointer mt-2 text-[1.1rem]">
+                  <summary>Item description</summary>
+                  <span className="text-gray-600 font-semibold">
+                    {product.itemDescription}
+                  </span>
+                </details>
+
+                <details className="flex cursor-pointer flex-col flex-wrap gap-2 mt-2">
+                  <summary className="text-blue-800 text-nowrap text-[1.1rem] ">
+                    Description Points
+                  </summary>
+                  {product?.descriptionPoints?.map((item, index) => (
+                    <p
                       key={item}
-                      className="text-white px-2 rounded bg-indigo-600   font-semibold  mr-2"
+                      className="text-gray-600 w-fit  font-semibold"
                     >
-                      {item}  
-                    </h5>
+                      {index + 1}. {item}
+                    </p>
                   ))}
-                </div>
+                </details>
+
+                <details className="cursor-pointer">
+                  <summary className="text-blue-800 text-nowrap text-[1.1rem] ">
+                    Variants
+                  </summary>
+                  <section className="overflow-x-auto mt-2 grid grid-cols-1">
+                    <table className="min-w-full text-sm text-left border border-gray-200">
+                      <thead className="bg-gray-100 text-gray-700">
+                        <tr>
+                          <th className="px-4 py-2">No.</th>
+                          <th className="px-4 py-2">Color</th>
+                          <th className="px-4 py-2">Capacity</th>
+                          <th className="px-4 py-2">Size</th>
+                          <th className="px-4 py-2">Weight</th>
+                          <th className="px-4 py-2">Original Cost</th>
+                          <th className="px-4 py-2">Selling Cost</th>
+                          <th className="px-4 py-2">Stock</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {product?.variants?.map((variant, index) => (
+                          <tr key={index} className="border-t">
+                            <td
+                              
+                              className="px-4 py-2 cursor-pointer"
+                            >
+                             {index + 1}
+                            </td>
+                            <td className="px-4 py-2">{variant.color}</td>
+                            <td className="px-4 py-2">{variant.capacity}</td>
+                            <td className="px-4 py-2">{variant.size}</td>
+                            <td className="px-4 py-2">{variant.weight}</td>
+                            <td className="px-4 py-2">
+                              ₹{variant.originalCost}
+                            </td>
+                            <td className="px-4 py-2 text-green-600 font-semibold">
+                              ₹{variant.sellingCost}
+                            </td>
+                            <td className="px-4 py-2">{variant.stock}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </section>
+                </details>
+
                 <div className="flex items-start flex-wrap gap-1 mt-2">
                   <h5 className="text-blue-800  text-[1.1rem] text-nowrap">
                     Product Tags :

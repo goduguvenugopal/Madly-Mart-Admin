@@ -8,8 +8,6 @@ import { dataContext } from "../App";
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
   const [offcanvas, setOffcanvas] = useState(false);
-  const [showNavbar, setShowNavbar] = useState(true);
-  const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
   const { user, token, setToken } = useContext(dataContext);
   const location = useLocation(null);
 
@@ -27,24 +25,7 @@ const Navbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollPos = window.scrollY;
 
-      if (prevScrollPos > currentScrollPos || currentScrollPos < 10) {
-        setShowNavbar(true);
-      } else {
-        setShowNavbar(false);
-      }
-      setPrevScrollPos(currentScrollPos);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [prevScrollPos]);
 
   const handleIconClick = (e) => {
     e.stopPropagation();
