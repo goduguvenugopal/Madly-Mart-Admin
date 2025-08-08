@@ -74,7 +74,7 @@ const Admin = () => {
       setSpin(true);
       try {
         const res = await axios.put(
-          `${api}/user/update-user/${editId}`,
+          `${api}/api/user/update-user/${editId}`,
           userData,
           {
             headers: {
