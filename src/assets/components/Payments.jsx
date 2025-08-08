@@ -166,7 +166,15 @@ const Payments = () => {
                     <h6 className="text-gray-700 mt-1">
                       Payment Date :{" "}
                       <span className="font-semibold capitalize text-black">
-                        {new Date(item.createdAt).toLocaleDateString("en-GB")}
+                        {new Date(item.createdAt).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true, // 👈 this enables AM/PM
+                        })}
                       </span>
                     </h6>
 

@@ -25,13 +25,13 @@ const FailedFailedPayments = () => {
         const res = await axios.get(`${api}/api/payments/get-failed-payments`);
         if (res) {
           console.log(res.data);
-          
+
           setFailedPayments(res.data.failedPayments);
         }
       } catch (error) {
         console.error(error);
-      }finally{
-        setFailedPaymentspin(false)
+      } finally {
+        setFailedPaymentspin(false);
       }
     };
 
@@ -92,7 +92,7 @@ const FailedFailedPayments = () => {
           </div>
         </div>
 
-      {/* buttons section  */}
+        {/* buttons section  */}
 
         <div className="flex justify-between flex-wrap gap-3 w-full mt-5">
           <div className="relative h-10 w-[7.6rem] cursor-pointer">
@@ -182,11 +182,19 @@ const FailedFailedPayments = () => {
                         {item.razorpay_order_id}
                       </span>
                     </h6>
-                   
+
                     <h6 className="text-gray-700 mt-1">
                       Payment Date :{" "}
                       <span className="font-semibold capitalize text-black">
-                        {new Date(item.createdAt).toLocaleDateString("en-GB")}
+                        {new Date(item.createdAt).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true,
+                        })}
                       </span>
                     </h6>
 
@@ -194,21 +202,24 @@ const FailedFailedPayments = () => {
                       Payment Status :{" "}
                       <span
                         className="font-semibold capitalize  
-                          bg-red-600 text-white rounded p-1 px-2" >
+                          bg-red-600 text-white rounded p-1 px-2"
+                      >
                         {item.paymentStatus}
                       </span>
                     </h6>
-                     <h6 className="text-gray-700 mt-1">
-                     <details>
-                      <summary className="text-[1rem] cursor-pointer text-gray-600 font-bold">See more Reasons</summary>
-                      <ul className="text-red-600 font-semibold">
-                        <li>Code : {item.error.code}</li>
-                        <li>Description : {item.error.description}</li>
-                        <li>Source : {item.error.source}</li>
-                        <li>Step : {item.error.step}</li>
-                        <li>Reason : {item.error.reason}</li>
-                      </ul>
-                     </details>
+                    <h6 className="text-gray-700 mt-1">
+                      <details>
+                        <summary className="text-[1rem] cursor-pointer text-gray-600 font-bold">
+                          See more Reasons
+                        </summary>
+                        <ul className="text-red-600 font-semibold">
+                          <li>Code : {item.error.code}</li>
+                          <li>Description : {item.error.description}</li>
+                          <li>Source : {item.error.source}</li>
+                          <li>Step : {item.error.step}</li>
+                          <li>Reason : {item.error.reason}</li>
+                        </ul>
+                      </details>
                     </h6>
                   </section>
                 ))}

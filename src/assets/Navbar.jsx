@@ -65,9 +65,7 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`bg-white w-[100vw] h-[5.2rem] flex justify-between px-4 lg:px-8 lg:justify-between fixed top-0 left-0 items-center shadow-md transition-transform duration-300  ${
-          showNavbar ? "translate-y-0" : "-translate-y-full"
-        } z-10`}
+        className={`bg-white w-[100vw] h-[5.2rem] flex justify-between px-4 lg:px-8 lg:justify-between fixed top-0 left-0 items-center shadow-md  z-50`}
       >
         {/* logo section  */}
         <div className="w-[11rem] md:w-[15rem]">

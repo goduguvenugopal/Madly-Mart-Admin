@@ -39,8 +39,7 @@ const Orders = () => {
   const inputSelectHandleFunc = (e) => {
     const inputText = e.target.value;
     setFilterOption(inputText);
-   
-    
+
     sessionStorage.setItem("filter", JSON.stringify(inputText));
   };
 
@@ -49,7 +48,7 @@ const Orders = () => {
     if (storedFilter) {
       const isFilter = JSON.parse(storedFilter);
       console.log(isFilter);
-      
+
       if (isFilter === "all") {
         setTodayOrders(todayOrders1);
       } else if (isFilter === "alldays") {
@@ -216,7 +215,15 @@ const Orders = () => {
                     <h6 className="text-gray-600 mt-1">
                       Ordered date :{" "}
                       <span className="font-semibold capitalize text-black">
-                        {item.orderDate}
+                        {new Date(item?.createdAt).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true,
+                        })}
                       </span>
                     </h6>
                     <h6 className="text-gray-600  mt-1">

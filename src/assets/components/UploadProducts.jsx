@@ -12,15 +12,25 @@ const UploadProducts = () => {
   const inputFocus = useRef();
   const [tags, setTags] = useState("");
   const [productImages, setProductImages] = useState([]);
+  const [descPoints, setDescPoints] = useState("");
+  const variantsInitialData = {
+    color: "",
+    capacity: "",
+    size: "",
+    weight: "",
+    originalCost: 200,
+    sellingCost: 150,
+    stock: 10,
+  };
+  const [variants, setVariants] = useState(variantsInitialData);
   const initialProductData = {
     itemName: "",
     itemDescription: "",
+    descriptionPoints: [],
     itemCost: "",
-    itemHalfKgCost: "",
-    itemKgCost: "",
     itemQty: "1",
+    variants: [],
     minOrderQty: "",
-    itemWeight: [],
     itemStock: "",
     itemCategory: "",
     itemSubCategory: "",
@@ -78,27 +88,31 @@ const UploadProducts = () => {
     setProductImages(remainImages);
   };
 
-  // product weight add function
-  const addWeightFunction = (event) => {
-    const weight = event.target.value;
-    if (weight) {
+  // product description points
+  const addDescriptionPoints = () => {
+    if (descPoints.trim()) {
       setProductData((prevData) => ({
         ...prevData,
-        itemWeight: [...prevData.itemWeight, weight],
+        descriptionPoints: [...prevData.descriptionPoints, descPoints],
       }));
+
+      setDescPoints("");
     }
   };
 
-  // remove weight function
-  const removeWeight = (itemWeight) => {
-    const remainWeight = productData.itemWeight.filter(
-      (item) => item !== itemWeight
+  // remove desc points function
+  const removeDescPoints = (points) => {
+    const remainpoints = productData?.descriptionPoints?.filter(
+      (item) => item !== points
     );
     setProductData((prevData) => ({
       ...prevData,
-      itemWeight: remainWeight,
+      descriptionPoints: remainpoints,
     }));
   };
+
+  // variants form handling
+  const variantsFormHandle = (e) => {};
 
   //product form Handle function
   const formHandleFunc = (e) => {
@@ -116,8 +130,6 @@ const UploadProducts = () => {
   formData.append("itemName", productData.itemName);
   formData.append("itemDescription", productData.itemDescription);
   formData.append("itemCost", productData.itemCost);
-  formData.append("itemHalfKgCost", productData.itemHalfKgCost);
-  formData.append("itemKgCost", productData.itemKgCost);
   formData.append("itemQty", productData.itemQty);
   formData.append("minOrderQty", productData.minOrderQty);
   formData.append("itemStock", productData.itemStock);
@@ -127,8 +139,8 @@ const UploadProducts = () => {
   formData.append("offerMessage", productData.offerMessage);
 
   // Append arrays (as individual fields)
-  productData.itemWeight.forEach((weight, index) => {
-    formData.append(`itemWeight[${index}]`, weight);
+  productData.descriptionPoints.forEach((points, index) => {
+    formData.append(` descriptionPoints[${index}]`, points);
   });
 
   productData.productTags.forEach((tag, index) => {
@@ -204,7 +216,7 @@ const UploadProducts = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-
+                {/* file inpu section  */}
                 <div className="mt-4 flex flex-col text-sm/6 text-gray-600">
                   <label
                     htmlFor="itemImage"
@@ -229,8 +241,9 @@ const UploadProducts = () => {
                 </div>
               </div>
             </div>
+            {/* render selected images  */}
             <div className="flex flex-wrap gap-2 mt-4">
-              {productImages.map((item, index) => (
+              {productImages?.map((item, index) => (
                 <div
                   key={index}
                   className="w-[6.5rem] lg:w-[9.5rem]  relative h-fit rounded"
@@ -245,6 +258,7 @@ const UploadProducts = () => {
             </div>
           </div>
 
+          {/*form input fields starts from here  */}
           <div className="space-y-12 lg:w-[50vw]">
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
               <div className="sm:col-span-4">
@@ -313,6 +327,49 @@ const UploadProducts = () => {
               </div>
               <div className="col-span-full">
                 <label
+                  htmlFor="descPoints"
+                  className="block text-sm/6 font-medium text-gray-900"
+                >
+                  Description Points
+                </label>
+                <div className="mt-2 flex gap-2">
+                  <textarea
+                    name="descPoints"
+                    onChange={(e) => setDescPoints(e.target.value)}
+                    value={descPoints}
+                    id="descPoints"
+                    rows={3}
+                    placeholder="Add product description key points"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  />
+                  {/* add points  */}
+                  <button
+                    type="button"
+                    onClick={addDescriptionPoints}
+                    className="p-2 w-24 h-10 rounded bg-blue-700 text-white"
+                  >
+                    Add
+                  </button>
+                </div>
+                {/* rendering description points  */}
+                <div className="mt-4 w-full flex flex-col flex-wrap gap-2">
+                  {productData?.descriptionPoints?.map((point, index) => (
+                    <div
+                      className="w-fit flex justify-between px-2 items-center gap-3 bg-gray-600 text-white rounded p-1 "
+                      key={index}
+                    >
+                      {point}
+                      <MdClose
+                        className="cursor-pointer bg-black"
+                        onClick={() => removeDescPoints(point)}
+                        size={25}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="col-span-full">
+                <label
                   htmlFor="offerMessage"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
@@ -331,46 +388,169 @@ const UploadProducts = () => {
                 </div>
               </div>
             </div>
+            {/* variants section starts here  */}
 
             <div className="border-b border-gray-900/10 pb-5">
+              <h4 className=" text-sm lg:text-[1.2rem] font-medium text-gray-900">
+                Add Variants
+              </h4>
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div className="sm:col-span-3">
                   <label
-                    htmlFor="itemHalfKgCost"
+                    htmlFor="color"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Medium Size Cost
+                    Color
                   </label>
                   <div className="mt-2">
                     <input
                       type="text"
-                      name="itemHalfKgCost"
-                      value={productData.itemHalfKgCost}
-                      placeholder="Enter product medium size cost "
-                      onChange={formHandleFunc}
-                      id="itemHalfKgCost"
+                      name="color"
+                     //  color}
+                      placeholder="Enter product color"
+                      onChange={variantsFormHandle}
+                      id="color"
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
-                    htmlFor="itemKgCost"
+                    htmlFor="capacity"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Large Size Cost
+                    Capacity
                   </label>
                   <div className="mt-2">
                     <input
                       type="text"
-                      name="itemKgCost"
-                      placeholder="Enter product large size cost"
-                      onChange={formHandleFunc}
-                      value={productData.itemKgCost}
-                      id="itemKgCost"
+                      name="capacity"
+                      placeholder="Enter product capacity"
+                      onChange={variantsFormHandle}
+                     //  capacity}
+                      id="capacity"
                       autoComplete="family-name"
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                     />
+                  </div>
+                </div>
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="weight"
+                    className="block text-sm/6 font-medium text-gray-900"
+                  >
+                    Weight
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="weight"
+                      onChange={variantsFormHandle}
+                     //  weight}
+                      placeholder="Enter product weight "
+                      id="weight"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="sellingCost"
+                    className="block text-sm/6 font-medium text-gray-900"
+                  >
+                    Selling Cost
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="number"
+                      name="sellingCost"
+                      placeholder="Enter product selling cost"
+                      onChange={variantsFormHandle}
+                     //  sellingCost}
+                      id="sellingCost"
+                      autoComplete="family-name"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="originalCost"
+                    className="block text-sm/6 font-medium text-gray-900"
+                  >
+                    Original Cost
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="number"
+                      name="originalCost"
+                      placeholder="Enter product original Cost"
+                      onChange={variantsFormHandle}
+                     //  originalCost}
+                      id="originalCost"
+                      autoComplete="family-name"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="stock"
+                    className="block text-sm/6 font-medium text-gray-900"
+                  >
+                    Variant Stock <span className="text-red-500">*</span>
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="number"
+                      name="stock"
+                      id="stock"
+                     //  stock}
+                      onChange={variantsFormHandle}
+                      placeholder="Enter stock quantity"
+                      required
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="itemWeight"
+                    className="block text-sm/6 font-medium text-gray-900"
+                  >
+                    Product Size
+                  </label>
+                  <div className="mt-2 grid grid-cols-1">
+                    <select
+                      onChange={variantsFormHandle}
+                      id="itemWeight"
+                     //  weight}
+                      name="itemWeight"
+                      className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    >
+                      <option disabled value="">
+                        Select the product Size
+                      </option>
+                      <option value="s">S</option>
+                      <option value="m">M</option>
+                      <option value="l">L</option>
+                      <option value="xl">XL</option>
+                      <option value="xxl">XXL</option>
+                    </select>
+                    <svg
+                      className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      data-slot="icon"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
                   </div>
                 </div>
                 <div className="sm:col-span-3">
@@ -538,58 +718,7 @@ const UploadProducts = () => {
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="itemWeight"
-                    className="block text-sm/6 font-medium text-gray-900"
-                  >
-                    Product Size
-                  </label>
-                  <div className="mt-2 grid grid-cols-1">
-                    <select
-                      onChange={addWeightFunction}
-                      id="itemWeight"
-                      value={productData.itemWeight}
-                      name="itemWeight"
-                      className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                    >
-                      <option disabled value="">
-                        Select the product Size
-                      </option>
-                      <option value="small">Small</option>
-                      <option value="medium">Medium</option>
-                      <option value="large">Large</option>
-                    </select>
-                    <svg
-                      className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      aria-hidden="true"
-                      data-slot="icon"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className=" flex flex-wrap gap-2 mt-5">
-                    {productData.itemWeight.map((item, index) => (
-                      <div
-                        className=" flex justify-around items-center gap-3 bg-blue-900 text-white rounded-full px-3 h-8"
-                        key={index}
-                      >
-                        {item}
-                        <MdClose
-                          className="cursor-pointer"
-                          onClick={() => removeWeight(item)}
-                          size={19}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
+               
                 <div className="col-span-full">
                   <label
                     htmlFor="productTags"

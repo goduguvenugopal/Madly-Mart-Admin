@@ -21,10 +21,9 @@ const OrderOverView = () => {
   useEffect(() => {
     // fetching order details
     const result = orders.find((item) => item._id === orderId);
-    setOrderDetails(result)
-    setTrackingId(result?.order_tracking_id)
+    setOrderDetails(result);
+    setTrackingId(result?.order_tracking_id);
     console.log(result);
-    
   }, [orderId, orders]);
 
   // status update function
@@ -39,7 +38,7 @@ const OrderOverView = () => {
       if (res) {
         setStatusSpin(false);
         setSelectModal(false);
-        setOrderStatus("")
+        setOrderStatus("");
         setReload(false);
         toast.success("Order Status updated successfully");
       }
@@ -214,9 +213,20 @@ const OrderOverView = () => {
                   ₹{orderDetails?.totalAmount}
                 </span>
               </p>
-              <h3 className="text-lg font-medium">
+              <h3 className="text-lg font-medium  ">
                 Order Date:{" "}
-                <span className="text-gray-700">{orderDetails?.orderDate}</span>
+                <span className="text-gray-700">
+                  {" "}
+                  {new Date(orderDetails?.createdAt).toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: true,
+                  })}
+                </span>
               </h3>
               <div className="mt-2 flex justify-between flex-wrap gap-2">
                 <button
@@ -260,8 +270,6 @@ const OrderOverView = () => {
                 <p>
                   <strong> Size :</strong> {product.products[0].itemWeight}
                 </p>
-               
-              
 
                 <div className="mt-4">
                   <h5 className="font-medium">Product Image:</h5>
