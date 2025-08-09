@@ -3,6 +3,7 @@ import { dataContext } from "../App";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { Loading } from "./components/Loading";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [loginToggle, setLoginToggle] = useState(false);
@@ -14,6 +15,7 @@ const Login = () => {
   const [submitBtn, setSubmitBtn] = useState(false);
   const [otpError, setOtpError] = useState(false);
   const inputFocus = useRef(null);
+  const navigate = useNavigate();
 
   // send otp function
   const sendOtpFunction = async (event) => {
@@ -52,6 +54,7 @@ const Login = () => {
         setSubmitBtn(false);
         setEmail("");
         setFullName("");
+        navigate("/")
       }
     } catch (error) {
       console.error(error);

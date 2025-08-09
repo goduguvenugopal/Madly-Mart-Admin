@@ -386,12 +386,12 @@ const ProductUpdateForm = () => {
                 <div className="mt-4 w-full flex flex-col flex-wrap gap-2">
                   {productData?.descriptionPoints?.map((point, index) => (
                     <div
-                      className="w-fit flex justify-between px-2 items-center gap-3 bg-gray-600 text-white rounded p-1 "
+                      className="w-fit px-2  relative  bg-gray-600 text-white rounded p-1 "
                       key={index}
                     >
-                      {point}
+                      <p className="mr-7 text-base lg:text-[1rem]">{point}</p>
                       <MdClose
-                        className="cursor-pointer bg-black"
+                        className="cursor-pointer absolute top-0 right-0 bg-black"
                         onClick={() => removeDescPoints(point)}
                         size={25}
                       />

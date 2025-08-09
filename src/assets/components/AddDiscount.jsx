@@ -4,6 +4,7 @@ import { CustomLoading, Loading, SmallLoading } from "../components/Loading";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const AddDiscount = () => {
   const { api, token } = useContext(dataContext);
@@ -145,7 +146,7 @@ const AddDiscount = () => {
   // delete discounts function
   const deleteCarouselFunc = async (carouselId) => {
     const isOkay = confirm(
-      "Offer images and title will be deleted permanently, are you sure ?"
+      "discounts and charges others will be removed, are you sure ?"
     );
     if (isOkay) {
       try {
@@ -343,12 +344,12 @@ const AddDiscount = () => {
                         </span>
                         <span className="mt-2 ">
                           Discount :{" "}
-                          <span className="text-blue-700">{item.discount}</span>
+                          <span className="text-blue-700">₹{item.discount}</span>
                         </span>
                         <span className="mt-2 ">
                           Delivery Charges :{" "}
                           <span className="text-blue-700">
-                            {item.deliveryCharges}
+                            ₹{item.deliveryCharges}
                           </span>
                         </span>
 
@@ -357,7 +358,7 @@ const AddDiscount = () => {
                           size={20}
                           className="text-green-600 hover:text-blue-600 cursor-pointer absolute top-4 right-4"
                         />
-                        {/* <RiDeleteBin6Line onClick={() => deleteCarouselFunc(item._id)} size={20} className='hover:text-red-600 cursor-pointer   text-gray-600' /> */}
+                        {/* <RiDeleteBin6Line onClick={() => deleteCarouselFunc(item._id)} size={20} className='hover:text-red-600 absolute top-12 right-4 cursor-pointer   text-gray-600' /> */}
                       </div>
                     ))}
 
@@ -401,7 +402,7 @@ const AddDiscount = () => {
                                 </label>
                                 <div className="mt-2">
                                   <input
-                                    type="string"
+                                    type="text"
                                     name="adsPopUp"
                                     id="adsPopUp"
                                     value={updateData.adsPopUp}
@@ -420,10 +421,10 @@ const AddDiscount = () => {
                                 </label>
                                 <div className="mt-2">
                                   <input
-                                    type="string"
+                                    type="text"
                                     name="couponCode"
                                     id="couponCode"
-                                    value={updateData.adsPopUp}
+                                    value={updateData.couponCode}
                                     onChange={updateHandleFunc}
                                     placeholder="Enter on and of to show the ads pop up"
                                     className="block number-input w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1  outline-gray-500 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"

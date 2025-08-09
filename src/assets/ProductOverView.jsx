@@ -200,7 +200,7 @@ const ProductOverView = () => {
                 </h5>
                 <details className="text-blue-800 cursor-pointer mt-2 text-[1.1rem]">
                   <summary>Item description</summary>
-                  <span className="text-gray-600 font-semibold">
+                  <span className="text-gray-600 font-semibold mt-1">
                     {product.itemDescription}
                   </span>
                 </details>
@@ -212,7 +212,7 @@ const ProductOverView = () => {
                   {product?.descriptionPoints?.map((item, index) => (
                     <p
                       key={item}
-                      className="text-gray-600 w-fit  font-semibold"
+                      className="text-gray-600 w-fit mt-1 font-semibold"
                     >
                       {index + 1}. {item}
                     </p>
