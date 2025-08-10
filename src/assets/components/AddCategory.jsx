@@ -386,7 +386,7 @@ const AddCategory = () => {
               <CustomLoading customHeight={"h-52"} />
             ) : (
               <>
-                {/* category update section  */}
+                {/*render the list of category and update section*/}
                 {categoryData.length <= 0 ? (
                   <div className="flex justify-center items-center h-52">
                     <h5 className="font-semibold text-[1.2rem] lg:text-[1.3rem]">
@@ -394,10 +394,10 @@ const AddCategory = () => {
                     </h5>
                   </div>
                 ) : (
-                  <div className="lg:flex lg:justify-center lg:flex-wrap lg:gap-2">
+                  <div className="lg:flex lg:justify-around lg:flex-wrap">
                     {categoryData.map((item) => (
                       <div
-                        className="flex border relative items-start gap-3 mb-3 shadow-md rounded shadow-gray-300 p-2 lg:w-2/4"
+                        className="flex border relative items-start gap-3 mb-3 shadow-md rounded shadow-gray-300 p-2 lg:w-[40%]"
                         key={item._id}
                       >
                         <img
