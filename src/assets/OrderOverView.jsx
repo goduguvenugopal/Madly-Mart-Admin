@@ -267,10 +267,26 @@ const OrderOverView = () => {
                 <p>
                   <strong>Quantity:</strong> {product.itemQty}
                 </p>
-                <p>
-                  <strong> Size :</strong> {product.products[0].itemWeight}
-                </p>
-
+                {product.size && (
+                  <p>
+                    <strong> Size :</strong> {product.size}
+                  </p>
+                )}
+                {product.weight && (
+                  <p>
+                    <strong> weight :</strong> {product.weight}
+                  </p>
+                )}
+                {product.capacity && (
+                  <p>
+                    <strong> capacity :</strong> {product.capacity}
+                  </p>
+                )}
+                {product.color && (
+                  <p>
+                    <strong> color :</strong> {product.color}
+                  </p>
+                )}
                 <div className="mt-4">
                   <h5 className="font-medium">Product Image:</h5>
                   <div className="flex gap-3 flex-wrap mt-2">
