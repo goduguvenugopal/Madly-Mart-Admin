@@ -4,6 +4,7 @@ import { dataContext } from "../App";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { SmallLoading } from "./components/Loading";
+import useCopiedContext from "./components/useCopiedContext";
 
 const OrderOverView = () => {
   const { orderId } = useParams();
@@ -14,6 +15,8 @@ const OrderOverView = () => {
   const [delayModal, setDelayModal] = useState(false);
   const [trackingId, setTrackingId] = useState("");
   const [orderStatus, setOrderStatus] = useState("");
+  const [signature, setSignature] = useState("");
+  useCopiedContext({ signature });
   const [delayMessage, setDelayMessage] = useState(
     "We apologize as your order will be delayed for a few days due to some issues. Please wait for the delivery or cancel the order at your convenience. Thank you for your understanding."
   );
@@ -185,7 +188,13 @@ const OrderOverView = () => {
               <hr className="border border-orange-200 mb-2" />
               <h6 className="">
                 <span className=" font-bold">Razorpay Signature:</span>{" "}
-                {orderDetails?.razorpay_signature}
+ 
+                <button
+                  onClick={() => setSignature(orderDetails?.razorpay_signature)}
+                  className="font-semibold bg-gray-500  text-white rounded-md p-1"
+                >
+                  Copy Signature
+                </button>
               </h6>
               <h6 className="">
                 <span className="font-bold  ">Razorpay Payment Id :</span>{" "}

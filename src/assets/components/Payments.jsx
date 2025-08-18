@@ -4,16 +4,20 @@ import { FaSearch } from "react-icons/fa";
 import { CustomLoading } from "./Loading";
 import { IoCalendarOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import useCopiedContext from "./useCopiedContext";
 
 const Payments = () => {
   const { payments, paymentspin } = useContext(dataContext);
   const [todayPayments, setTodayPayments] = useState([]);
+  const [signature , setSignature] = useState("")
   const [selectDate, setSelectDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
   const dateRef = useRef(null);
   const [allPayments, setAllPayments] = useState(false);
+useCopiedContext({signature})
+
 
   // rendering payments according to the date
   useEffect(() => {
@@ -159,9 +163,9 @@ const Payments = () => {
                     </h6>
                     <h6 className="text-gray-700 mt-1">
                       Razorpay Signature :{" "}
-                      <span className="font-semibold   text-black">
-                        {item.razorpay_signature}
-                      </span>
+                      <button onClick={()=> setSignature(item.razorpay_signature)} className="font-semibold bg-gray-500  text-white rounded-md p-1">
+                       Copy Signature
+                      </button>
                     </h6>
                     <h6 className="text-gray-700 mt-1">
                       Payment Date :{" "}
