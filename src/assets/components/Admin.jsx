@@ -103,7 +103,7 @@ const Admin = () => {
     const message = confirm("User will be deleted permanently, are you sure ?");
     if (message) {
       try {
-        const res = await axios.delete(`${api}/user/delete-user/${userID}`, {
+        const res = await axios.delete(`${api}/api/user/delete-user/${userID}`, {
           headers: {
             token: token,
           },
