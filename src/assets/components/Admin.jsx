@@ -164,6 +164,7 @@ const Admin = () => {
             </tr>
           </thead>
           <tbody>
+            {/* maping user details  */}
             {filter.map((item) => (
               <tr key={item._id} className="bg-gray-700 h-10 text-white">
                 <td className="border border-white pl-3">
@@ -172,9 +173,13 @@ const Admin = () => {
                     <span>{item.email}</span>
                     <span>user Id : {item._id}</span>
                     <span
-                      className={`${
+                      className={`font-bold ${
                         item.role === "admin"
                           ? "bg-blue-500 rounded w-fit px-3 mt-1"
+                          : null
+                      } ${
+                        item.role === "vendor"
+                          ? "bg-yellow-500 rounded w-fit px-3 mt-1"
                           : null
                       }`}
                     >
@@ -217,6 +222,8 @@ const Admin = () => {
               </option>
               <option value="user">User</option>
               <option value="admin">Admin</option>
+              <option value="vendor">Vendor</option>
+
             </select>
             {spin ? (
               <button className="bg-black mt-5 w-full text-white rounded p-2 flex items-center gap-2 justify-center">

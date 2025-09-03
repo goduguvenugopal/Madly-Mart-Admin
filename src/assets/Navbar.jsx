@@ -11,8 +11,6 @@ const Navbar = () => {
   const { user, token, setToken } = useContext(dataContext);
   const location = useLocation(null);
 
-  
-  
   useEffect(() => {
     const handleDocumentClick = () => {
       setToggle(false);
@@ -24,8 +22,6 @@ const Navbar = () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
-
-
 
   const handleIconClick = (e) => {
     e.stopPropagation();
@@ -51,103 +47,122 @@ const Navbar = () => {
         {/* logo section  */}
         <div className="w-[11rem] md:w-[15rem]">
           <Link to="/">
-          <img
-            className="mt-3 w-full rounded-full"
-            src="/MadlyMart.png"
-            alt="dora-logo"
+            <img
+              className="mt-3 w-full rounded-full"
+              src="/MadlyMart.png"
+              alt="dora-logo"
             />
-            </Link>
+          </Link>
         </div>
 
-        {/* links for large device section*/}
-        <div className="hidden lg:block select-none">
-          <div className=" flex items-center font-semibold text-black gap-4">
-            <Link
-              onClick={() => setOffcanvas(false)}
-              to="/"
-              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/" ? "text-blue-600" : ""}`}
-            >
-              Orders
-            </Link>
-            <Link
-              onClick={() => setOffcanvas(false)}
-              to="/payments"
-              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/payments" ? "text-blue-600" : ""}`}
+        {user.role === "admin" && (
+          <>
+            {/* links for large device section*/}
+            <div className="hidden lg:block select-none">
+              <div className=" flex items-center font-semibold text-black gap-4">
+                <Link
+                  onClick={() => setOffcanvas(false)}
+                  to="/"
+                  className={`text-[1.2rem] hover:text-blue-600 ${
+                    location.pathname === "/" ? "text-blue-600" : ""
+                  }`}
+                >
+                  Orders
+                </Link>
+                <Link
+                  onClick={() => setOffcanvas(false)}
+                  to="/payments"
+                  className={`text-[1.2rem] hover:text-blue-600 ${
+                    location.pathname === "/payments" ? "text-blue-600" : ""
+                  }`}
+                >
+                  Payments
+                </Link>
+                <Link
+                  onClick={() => setOffcanvas(false)}
+                  to="/products"
+                  className={`text-[1.2rem] hover:text-blue-600 ${
+                    location.pathname === "/products" ? "text-blue-600" : ""
+                  }`}
+                >
+                  Products
+                </Link>
 
-            >
-              Payments
-            </Link>
-            <Link
-              onClick={() => setOffcanvas(false)}
-              to="/products"
-              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/products" ? "text-blue-600" : ""}`}
-               
-            >
-              Products
-            </Link>
-
-            <Link
-              onClick={() => setOffcanvas(false)}
-              to="/carousel"
-              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/carousel" ? "text-blue-600" : ""}`}
-              
-            >
-              Manage Offers
-            </Link>
-            <Link
-              onClick={() => setOffcanvas(false)}
-              to="/admin"
-              className={`text-[1.2rem] hover:text-blue-600 ${location.pathname === "/admin" ? "text-blue-600" : ""}`}
-              
-            >
-              Admin
-            </Link>
-          </div>
-        </div>
-
-        {/* navbar and profile icon section  */}
-        <div className="flex flex-wrap items-center gap-7 relative">
-          <CgProfile
-            onClick={handleIconClick}
-            size={25}
-            title="Profile"
-            className="text-black cursor-pointer rounded-full"
-          />
-          <FaBars
-            size={25}
-            title="open menu"
-            className="text-black cursor-pointer"
-            onClick={() => setOffcanvas(true)}
-          />
-          {toggle && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="absolute right-0 top-[2rem] w-[7rem] bg-gray-600 rounded p-1"
-            >
-              <h5 className="text-white hover:bg-blue-500 cursor-pointer p-1 rounded capitalize">
-                {user.fullName.substring(0, 9)}
-              </h5>
-              <Link
-                className="text-white flex hover:bg-blue-500 cursor-pointer p-1 rounded capitalize"
-                to="/visitors"
-              >
-                Visitors
-              </Link>
-              <Link
-                to="/admin"
-                className="text-white flex hover:bg-blue-500 lg:hidden cursor-pointer p-1 rounded capitalize"
-              >
-                Admin
-              </Link>
-              <h5
-                className="text-white hover:bg-blue-500 rounded  cursor-pointer p-1"
-                onClick={removeToken}
-              >
-                Log Out
-              </h5>
+                <Link
+                  onClick={() => setOffcanvas(false)}
+                  to="/carousel"
+                  className={`text-[1.2rem] hover:text-blue-600 ${
+                    location.pathname === "/carousel" ? "text-blue-600" : ""
+                  }`}
+                >
+                  Manage Offers
+                </Link>
+                <Link
+                  onClick={() => setOffcanvas(false)}
+                  to="/admin"
+                  className={`text-[1.2rem] hover:text-blue-600 ${
+                    location.pathname === "/admin" ? "text-blue-600" : ""
+                  }`}
+                >
+                  Admin
+                </Link>
+              </div>
             </div>
-          )}
-        </div>
+
+            {/* navbar and profile icon section  */}
+            <div className="flex flex-wrap items-center gap-7 relative">
+              <CgProfile
+                onClick={handleIconClick}
+                size={25}
+                title="Profile"
+                className="text-black cursor-pointer rounded-full"
+              />
+              <FaBars
+                size={25}
+                title="open menu"
+                className="text-black cursor-pointer"
+                onClick={() => setOffcanvas(true)}
+              />
+              {toggle && (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute right-0 top-[2rem] w-[7rem] bg-gray-600 rounded p-1"
+                >
+                  <h5 className="text-white hover:bg-blue-500 cursor-pointer p-1 rounded capitalize">
+                    {user.fullName.substring(0, 9)}
+                  </h5>
+                  <Link
+                    className="text-white flex hover:bg-blue-500 cursor-pointer p-1 rounded capitalize"
+                    to="/visitors"
+                  >
+                    Visitors
+                  </Link>
+                  <Link
+                    to="/admin"
+                    className="text-white flex hover:bg-blue-500 lg:hidden cursor-pointer p-1 rounded capitalize"
+                  >
+                    Admin
+                  </Link>
+                  <h5
+                    className="text-white hover:bg-blue-500 rounded  cursor-pointer p-1"
+                    onClick={removeToken}
+                  >
+                    Log Out
+                  </h5>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {user.role === "vendor" && (
+          <h5
+            className="bg-blue-500 text-white hover:bg-blue-600 rounded  cursor-pointer p-1"
+            onClick={removeToken}
+          >
+            Log Out
+          </h5>
+        )}
       </div>
 
       {/* offcanvas for small and large devices */}
@@ -199,6 +214,13 @@ const Navbar = () => {
             className="text-[1.2rem]"
           >
             Manage Category
+          </Link>
+          <Link
+            onClick={() => setOffcanvas(false)}
+            to="/categoryslides"
+            className="text-[1.2rem]"
+          >
+            Manage Category Slides
           </Link>
           <Link
             onClick={() => setOffcanvas(false)}

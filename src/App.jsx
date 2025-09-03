@@ -19,6 +19,7 @@ import AddDiscount from "./assets/components/AddDiscount.jsx";
 import Payments from "./assets/components/Payments.jsx";
 import FailedPayments from "./assets/components/FailedPayments.jsx";
 import Visitors from "./assets/components/Visitors.jsx";
+import CategorySlides from "./assets/components/CategorySlides.jsx";
 
 export const dataContext = createContext();
 
@@ -39,8 +40,8 @@ function App() {
     const token = localStorage.getItem("token");
     if (token) {
       setToken(JSON.parse(token));
-    }else{
-      setLoading(false)
+    } else {
+      setLoading(false);
     }
   }, []);
 
@@ -91,7 +92,6 @@ function App() {
         setPaymentSpin(true);
         const res = await axios.get(`${api}/api/payment/get-all-payments`);
         if (res) {
-      
           setPayments(res.data.payments);
         }
       } catch (error) {
@@ -129,31 +129,41 @@ function App() {
           paymentSpin,
         }}
       >
-        {user.role === "admin" && token && <Navbar />}
+        {(user.role === "admin" || user.role === "vendor") && token && (
+          <Navbar />
+        )}
         <Routes>
-          {user.role === "admin" && token ? (
+          {(user.role === "admin" || user.role === "vendor") && token ? (
             <>
               <Route path="/" element={<Orders />} />
-              <Route path="/products" element={<Products />} />
-              <Route
-                path="/products/product_over_view/:id"
-                element={<ProductOverView />}
-              >
-                <Route path="updateproduct" element={<ProductUpdateForm />} />
-              </Route>
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/uploadproducts" element={<UploadProducts />} />
-              <Route path="/addcategory" element={<AddCategory />} />
-              <Route path="/carousel" element={<UploadCarousel />} />
-              <Route path="/discount" element={<AddDiscount />} />
-              <Route path="/payments" element={<Payments />} />
               <Route
                 path="/order_over_view/:orderId"
                 element={<OrderOverView />}
               />
-              <Route path="/visitors" element={<Visitors />} />
-              <Route path="/failedpayments" element={<FailedPayments />} />
-              <Route path="*" element={<PageNotFound />} />
+              {user.role === "admin" && (
+                <>
+                  <Route path="/products" element={<Products />} />
+                  <Route
+                    path="/products/product_over_view/:id"
+                    element={<ProductOverView />}
+                  >
+                    <Route
+                      path="updateproduct"
+                      element={<ProductUpdateForm />}
+                    />
+                  </Route>
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/uploadproducts" element={<UploadProducts />} />
+                  <Route path="/addcategory" element={<AddCategory />} />
+                  <Route path="/carousel" element={<UploadCarousel />} />
+                  <Route path="/discount" element={<AddDiscount />} />
+                  <Route path="/payments" element={<Payments />} />
+                  <Route path="categoryslides" element={<CategorySlides />} />
+
+                  <Route path="/visitors" element={<Visitors />} />
+                  <Route path="/failedpayments" element={<FailedPayments />} />
+                </>
+              )}
             </>
           ) : (
             <>
@@ -162,6 +172,7 @@ function App() {
               <Route path="*" element={<Login />} />
             </>
           )}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </dataContext.Provider>
     </>
