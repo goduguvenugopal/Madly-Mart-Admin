@@ -1,6 +1,11 @@
 // main categories
  export const Maincategories = [
   "New Arrival",
+  "T-Shirts",
+  "Plain T-Shirts",
+  "Design T-Shirts",
+  "Hoodies",
+  "Activewear / Sports T-Shirts",
   "Monsoon",
   "Home & Kitchen",
   "Toys & Games",
@@ -10,6 +15,7 @@
   "Home Improvement",
   "Mobile Cover",
   "Stationery",
+
 ];
 
 // products names according to the categories
@@ -343,9 +349,59 @@
   "Tape Dispenser",
 ];
 
-// ing maping subcategories
+
+
+//  according to the categories
+const tshirt = [
+  "Round Neck T-Shirts",
+  "V-Neck T-Shirts",
+  "Polo T-Shirts",
+  "Henley T-Shirts",
+  "Raglan Sleeve T-Shirts",
+  "Oversized T-Shirts",
+  "Slim Fit T-Shirts",
+];
+
+const plainTshirt = [
+  "Solid Color Half Sleeve",
+  "Solid Color Full Sleeve",
+  "Basic White Tee",
+  "Basic Black Tee",
+  "Minimal Logo Tee",
+];
+
+const designTshirt = [
+  "Graphic T-Shirts",
+  "Typography T-Shirts",
+  "Striped T-Shirts",
+  "Color Block T-Shirts",
+  "Tie-Dye T-Shirts",
+  "Vintage Wash T-Shirts",
+  "All-Over Print T-Shirts",
+];
+
+const hoodie = [
+  "Pullover Hoodies",
+  "Zip-Up Hoodies",
+  "Sleeveless Hoodies",
+  "Lightweight Hoodie Tees",
+];
+
+const activewear = [
+  "Dry-Fit Performance Tees",
+  "Gym Tank Tops",
+  "Running Tees",
+  "Sleeveless Muscle Tees",
+];
+
+//  maping categories to subcategories
  export const categoryMap = {
   "New Arrival" : newArrivalProducts,
+  "T-Shirts" :tshirt,
+  "Plain T-Shirts" : plainTshirt,
+  "Design T-Shirts" :designTshirt,
+  "Hoodies":hoodie,
+  "Activewear / Sports T-Shirts" : activewear,
   "Monsoon" : monsoonProducts,
   "Home & Kitchen" : homeKitchenProducts,
   "Toys & Games" : toysGamesProducts,

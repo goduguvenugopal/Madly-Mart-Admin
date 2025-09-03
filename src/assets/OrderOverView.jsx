@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { SmallLoading } from "./components/Loading";
 import useCopiedContext from "./components/useCopiedContext";
+import useEmailTemplates from "./utils/useEmailTemplates";
 
 const OrderOverView = () => {
   const { orderId } = useParams();
@@ -16,17 +17,24 @@ const OrderOverView = () => {
   const [trackingId, setTrackingId] = useState("");
   const [orderStatus, setOrderStatus] = useState("");
   const [signature, setSignature] = useState("");
+  const [cancelData , setCancelData] = useState({})
   useCopiedContext({ signature });
   const [delayMessage, setDelayMessage] = useState(
     "We apologize as your order will be delayed for a few days due to some issues. Please wait for the delivery or cancel the order at your convenience. Thank you for your understanding."
   );
+
+const {cancelEmailData} = useEmailTemplates()
 
   useEffect(() => {
     // fetching order details
     const result = orders.find((item) => item._id === orderId);
     setOrderDetails(result);
     setTrackingId(result?.order_tracking_id);
-    console.log(result);
+    setCancelData({
+      orderId : result._id,
+      email : result?.shippingAddress[0]?.email,
+      totalAmount :result?.totalAmount,
+    })
   }, [orderId, orders]);
 
   // status update function
@@ -44,6 +52,9 @@ const OrderOverView = () => {
         setOrderStatus("");
         setReload(false);
         toast.success("Order Status updated successfully");
+        if(orderStatus === "cancelled"){
+          await axios.post(`${api}/api/updates-email/send-updates`, cancelEmailData)
+        }
       }
     } catch (error) {
       console.error(error);

@@ -54,7 +54,7 @@ const Login = () => {
         setSubmitBtn(false);
         setEmail("");
         setFullName("");
-        navigate("/")
+        navigate("/");
       }
     } catch (error) {
       console.error(error);
