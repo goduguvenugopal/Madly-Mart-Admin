@@ -3,9 +3,11 @@
   "New Arrival",
   "T-Shirts",
   "Plain T-Shirts",
+  "Sweatshirts",
+  "Polo T-Shirts",
   "Design T-Shirts",
   "Hoodies",
-  "Activewear / Sports T-Shirts",
+  "Sports T-Shirts",
   "Monsoon",
   "Home & Kitchen",
   "Toys & Games",
@@ -351,7 +353,7 @@
 
 
 
-//  according to the categories
+// clothes categories
 const tshirt = [
   "Round Neck T-Shirts",
   "V-Neck T-Shirts",
@@ -387,7 +389,23 @@ const hoodie = [
   "Lightweight Hoodie Tees",
 ];
 
-const activewear = [
+const sweatShirt = [
+  "Crew Neck Sweatshirts",
+  "Quarter Zip Sweatshirts",
+  "Oversized Sweatshirts",
+  "Embroidered Sweatshirts",
+  "Fleece-Lined Sweatshirts",
+];
+
+const poloTshirt = [
+  "Classic Cotton Polo",
+  "Sports Polo",
+  "Striped Polo",
+  "Slim Fit Polo",
+  "Long Sleeve Polo",
+];
+
+const sportsTshirt = [
   "Dry-Fit Performance Tees",
   "Gym Tank Tops",
   "Running Tees",
@@ -400,8 +418,10 @@ const activewear = [
   "T-Shirts" :tshirt,
   "Plain T-Shirts" : plainTshirt,
   "Design T-Shirts" :designTshirt,
+  "Sweatshirts" : sweatShirt,
+  "Polo T-Shirts" : poloTshirt,
   "Hoodies":hoodie,
-  "Activewear / Sports T-Shirts" : activewear,
+  "Sports T-Shirts" : sportsTshirt,
   "Monsoon" : monsoonProducts,
   "Home & Kitchen" : homeKitchenProducts,
   "Toys & Games" : toysGamesProducts,

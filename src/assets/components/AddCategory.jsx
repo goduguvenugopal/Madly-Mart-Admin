@@ -294,9 +294,7 @@ const AddCategory = () => {
                         {Maincategories.map((item, index) => (
                           <option
                             key={index}
-                            className={`capitalize ${
-                              item === "non-veg" && "hidden"
-                            }`}
+                            className={`capitalize  `}
                             value={item}
                           >
                             {item}

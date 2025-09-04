@@ -218,9 +218,9 @@ const Navbar = () => {
           <Link
             onClick={() => setOffcanvas(false)}
             to="/categoryslides"
-            className="text-[1.2rem]"
+            className="text-[1.2rem] "
           >
-            Manage Category Slides
+            Category Slides
           </Link>
           <Link
             onClick={() => setOffcanvas(false)}
@@ -231,8 +231,8 @@ const Navbar = () => {
           </Link>
 
           <a
-            href="Dora A-Z Fresh Seller.apk"
-            download="Dora A-Z Fresh Seller.apk"
+            href="Madly Mart Admin.apk"
+            download="Madly Mart Admin.apk"
             className="text-[1.2rem] absolute left-5 bottom-5 h-10 bg-blue-600 flex justify-center items-center gap-2 rounded-full w-fit hover:bg-blue-800 px-5"
           >
             <FaDownload /> Download App
