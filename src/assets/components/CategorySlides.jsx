@@ -20,7 +20,6 @@ const CategorySlides = () => {
         setCategorySlides(
           res.data?.categorySlides === null ? [] : res.data?.categorySlides
         );
-         
       }
     } catch (error) {
       console.error(error);
@@ -49,9 +48,6 @@ const CategorySlides = () => {
     }
   };
 
-  console.log(categorySlides);
-
-  console.log(selectedSlides);
 
   // update category slides
   const updateCategorySlides = async () => {
@@ -98,6 +94,12 @@ const CategorySlides = () => {
     }
   };
 
+  // remove category slides
+  const removeCateSlides = (cate) => {
+    const filtered = selectedSlides.filter((item) => item !== cate);
+    setSelectedSlides(filtered);
+  };
+
   if (loader) {
     return (
       <div className="flex h-screen font-bold text-[1rem] justify-center items-center">
@@ -109,7 +111,12 @@ const CategorySlides = () => {
   return (
     <div className="mt-[6.1rem] p-3 lg:p-5 pb-9">
       <ToastContainer position="top-center" theme="dark" />
-      <div className="w-full flex flex-col md:flex-row gap-5 md:justify-around">
+        <h5 className="text-center text-[1.2rem]  font-semibold">
+          Add Category Slides & Update
+        </h5>
+        <hr className="border  border-gray-200 mb-2 mt-1" />
+
+      <div className="mt-5 w-full flex flex-col md:flex-row gap-5 md:justify-around">
         <div className="md:w-1/2">
           {/* all categories drop down  */}
           <label
@@ -130,7 +137,6 @@ const CategorySlides = () => {
                 Select the category
               </option>
               {Maincategories?.map((item, index) => (
-                
                 <option key={index} className={`capitalize `} value={item}>
                   {item}
                 </option>
@@ -164,7 +170,7 @@ const CategorySlides = () => {
                 className=" flex justify-between items-center gap-3 bg-blue-900 text-white rounded-full px-3 h-8"
               >
                 {index + 1}. {cate}
-                <MdClose className="cursor-pointer" size={19} />
+                <MdClose onClick={()=> removeCateSlides(cate)} className="cursor-pointer" size={19} />
               </li>
             ))}
           </ol>
